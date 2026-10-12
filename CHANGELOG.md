@@ -1,5 +1,42 @@
 # Changelog
 
+## V 0.3.0
+- Rebuild as a single Python app (FastAPI + SQLite) implementing the first slice of FRS v1.0; remove the Node.js server and the separate `dashboard.html` prototype.
+- Transparent weighted match scoring with per-factor reasons, data coverage, exclusions and skills gaps; salary rules carried over.
+- Natural-language and filtered job search, duplicate merging across sources, shortlist and link status checks.
+- Application workflow: draft, readiness, preview, explicit approval, employer page, confirmed submission, outcomes, follow-ups and timeline.
+- Gemini assistant with validated tool calling, context-aware suggestions, conversation history, usage tracking and approval-gated proposals. No submission tool.
+- Profile, work history, preferences, resume upload, settings and delete-all-data.
+- One module per function (`app/modules/<name>/router.py` + `service.py`), registered by `main.py` from `config/app.json`; settings, defaults, rules and prompts live in `config/*.json`.
+- 28 automated tests, including a check that `main.py` holds no routes or settings.
+
+## V 0.2.2
+- Remove duplicate Tapomoy avatar/name from the top-right header; keep the main greeting.
+
+## V 0.2.1
+- Match reference layout proportions: full-width header, left sidebar, central jobs area and taller right-side assistant panel.
+- Remove extra homepage metrics, status banner and activity panel from the reference layout; retain reports in Applications and controls in Settings.
+- Preserve real-data job rendering without sample cards. Discovery integration remains pending.
+
+## V 0.2.0
+- Redesign active dashboard using the user's neon glass reference: dark navy background, cyan/purple borders, sidebar, job cards, metrics and Gemini panel.
+- Responsive desktop, tablet and mobile layout with local job search and functional navigation.
+- Preserve job entry, outcome tracking, schedules, local reviews and downloadable reports.
+- Show real tracked jobs and honest empty states; no fabricated listings or match percentages.
+- Add outcome dialog with CV version and notes; website and GitHub remain prominent in preferences.
+- Gemini panel runs local helper actions and clearly states AI is disconnected.
+- Browser verification and test execution pending due to tool process-launch failure.
+
+## V 0.1.2
+- Save personal website and recruiter-facing showcase preference.
+- Display website and GitHub links together in the dashboard.
+- Document website inclusion in future CV and application workflows.
+
+## V 0.1.1
+- Salary screening uses ₹20 LPA total CTC for Google, Microsoft, Meta, Amazon, Apple and Netflix; other employers retain ₹25 LPA.
+- Save GitHub profile and project showcase preference for future CV/application integrations.
+- Add salary boundary and employer-name test. Execution pending due to tool process-launch failure.
+
 ## V 0.1.0
 - Standalone local Windows dashboard and launcher.
 - Saved role, salary, location, seniority and notice preferences.

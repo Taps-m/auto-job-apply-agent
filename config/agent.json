@@ -1,0 +1,192 @@
+{
+  "system_prompt": "You are the Personal Job Assistant, a career agent for one job seeker.\nRules:\n- Only discuss vacancies returned by your tools. Never invent jobs, companies, salaries, links or application statuses.\n- Separate facts from opinion. Prefix verified facts taken from a vacancy or the profile with \"Verified:\" and your own judgement with \"Recommendation:\" or \"Estimate:\" where the difference matters.\n- Professional facts about the user come only from get_user_profile. Suggest better wording, but never add experience, qualifications or achievements the profile does not contain; ask the user instead.\n- Match scores come from calculate_job_match. They estimate profile compatibility, not the chance of being selected; say so when you quote one.\n- You cannot submit applications. To save a job or start an application draft, call the propose_* tool; the user approves it in the app. Never say an application was submitted unless get_application_status shows status \"submitted\".\n- If a tool returns an error, say what failed in plain words.\n- Be concise. Use short paragraphs or bullet lists.",
+  "tools": {
+    "search_jobs": {
+      "description": "Search saved vacancies, ranked by match score. Supports natural language such as 'credit risk jobs in Kolkata above 30 LPA'.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Keywords or natural-language search"
+          },
+          "location": {
+            "type": "string"
+          },
+          "remote": {
+            "type": "boolean"
+          },
+          "min_salary_lpa": {
+            "type": "number"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "1-20, default 10"
+          }
+        }
+      }
+    },
+    "get_job_details": {
+      "description": "Full details of one vacancy, including description, source link, retrieval time and match breakdown.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "job_id": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "job_id"
+        ]
+      }
+    },
+    "get_user_profile": {
+      "description": "The user's approved career profile, work history and job preferences.",
+      "parameters": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    "calculate_job_match": {
+      "description": "Transparent match score for a vacancy with per-factor reasons.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "job_id": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "job_id"
+        ]
+      }
+    },
+    "compare_jobs": {
+      "description": "Side-by-side facts and match breakdowns for two to five vacancies.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "job_ids": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          }
+        },
+        "required": [
+          "job_ids"
+        ]
+      }
+    },
+    "analyze_skill_gaps": {
+      "description": "Required and preferred skills of a vacancy that are missing from the user's profile.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "job_id": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "job_id"
+        ]
+      }
+    },
+    "list_applications": {
+      "description": "All of the user's applications with status and follow-up dates.",
+      "parameters": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    "get_application_status": {
+      "description": "Status and timeline of one application.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "application_id": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "application_id"
+        ]
+      }
+    },
+    "propose_save_job": {
+      "description": "Ask the user to approve adding a vacancy to their shortlist.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "job_id": {
+            "type": "integer"
+          },
+          "reason": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "job_id"
+        ]
+      }
+    },
+    "propose_application_draft": {
+      "description": "Ask the user to approve starting an application draft for a vacancy. Does not submit anything.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "job_id": {
+            "type": "integer"
+          },
+          "reason": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "job_id"
+        ]
+      }
+    }
+  },
+  "suggestions": {
+    "job": [
+      "What qualifications am I missing for {job}?",
+      "Compare {job} with my current role",
+      "Is {job} a good fit for my career goals?",
+      "Prepare 10 interview questions for {job}"
+    ],
+    "home": [
+      "Find better jobs in {city}",
+      "Which of my matches should I apply to first?",
+      "What is missing from my profile?"
+    ],
+    "jobs": [
+      "Why are these jobs ranked highest?",
+      "Compare my top three matches",
+      "Show remote roles only"
+    ],
+    "applications": [
+      "Which applications need follow-up?",
+      "Summarise my application progress"
+    ],
+    "profile": [
+      "What should I add to my profile for better matches?",
+      "Suggest skills to learn next"
+    ],
+    "settings": [
+      "What does each automation level allow?"
+    ],
+    "default": [
+      "What should I do next in my job search?"
+    ]
+  },
+  "errors": {
+    "not_connected": "Gemini is not connected. Add GEMINI_API_KEY to the .env file in the app folder and restart.",
+    "429": "Gemini rate limit reached. Wait a minute and try again.",
+    "401": "Gemini rejected the API key. Check GEMINI_API_KEY in the .env file.",
+    "403": "Gemini rejected the API key. Check GEMINI_API_KEY in the .env file.",
+    "404": "The model {model} is not available to your key. Pick another model in Settings.",
+    "too_many_steps": "I stopped after several tool steps without a final answer. Please narrow the question.",
+    "empty": "I could not produce an answer. Please rephrase."
+  }
+}

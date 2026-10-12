@@ -1,0 +1,119 @@
+{
+  "builtin_skills": [
+    "python",
+    "sql",
+    "r",
+    "sas",
+    "excel",
+    "vba",
+    "tableau",
+    "power bi",
+    "machine learning",
+    "deep learning",
+    "statistics",
+    "credit risk",
+    "market risk",
+    "ifrs 9",
+    "basel",
+    "cecl",
+    "stress testing",
+    "var",
+    "financial modelling",
+    "financial modeling",
+    "valuation",
+    "dcf",
+    "pyspark",
+    "spark",
+    "aws",
+    "azure",
+    "gcp",
+    "docker",
+    "kubernetes",
+    "fastapi",
+    "javascript",
+    "typescript",
+    "react",
+    "node.js",
+    "pandas",
+    "scikit-learn",
+    "tensorflow",
+    "pytorch",
+    "llm",
+    "nlp",
+    "git",
+    "risk modelling",
+    "model validation"
+  ],
+  "city_aliases": {
+    "bengaluru": [
+      "bengaluru",
+      "bangalore"
+    ],
+    "delhi ncr": [
+      "delhi",
+      "new delhi",
+      "ncr",
+      "gurugram",
+      "gurgaon",
+      "noida",
+      "faridabad",
+      "ghaziabad"
+    ],
+    "mumbai": [
+      "mumbai",
+      "bombay",
+      "navi mumbai",
+      "thane"
+    ],
+    "kolkata": [
+      "kolkata",
+      "calcutta"
+    ],
+    "chennai": [
+      "chennai",
+      "madras"
+    ]
+  },
+  "seniority_labels": {
+    "0": "Intern/trainee",
+    "1": "Entry/analyst",
+    "2": "Mid-level",
+    "3": "Lead/manager",
+    "4": "AVP/senior manager",
+    "5": "VP/director",
+    "6": "Executive"
+  },
+  "seniority_rules": [
+    [
+      "\\b(intern|trainee|apprentice)\\b",
+      0
+    ],
+    [
+      "\\b(chief|managing director|cxo|cto|cfo|cro)\\b",
+      6
+    ],
+    [
+      "\\b(avp|assistant vice president|senior manager|associate director)\\b",
+      4
+    ],
+    [
+      "\\b(vp|vice president|director|head of|principal)\\b",
+      5
+    ],
+    [
+      "\\b(lead|manager|staff engineer|senior associate)\\b",
+      3
+    ],
+    [
+      "\\b(senior analyst|associate|senior engineer|senior developer|specialist|consultant|engineer|developer|scientist)\\b",
+      2
+    ],
+    [
+      "\\b(junior|graduate|analyst|fresher)\\b",
+      1
+    ]
+  ],
+  "location_rank_step": 0.07,
+  "location_rank_floor": 0.6,
+  "role_in_description_score": 0.6
+}

@@ -1,0 +1,102 @@
+{
+  "roles": [
+    "Credit risk",
+    "Market risk",
+    "Investment banking",
+    "AI/software",
+    "Fintech"
+  ],
+  "role_keywords": {
+    "Credit risk": [
+      "credit risk",
+      "credit analyst",
+      "credit underwriting",
+      "ifrs 9",
+      "expected credit loss",
+      "probability of default",
+      "credit portfolio"
+    ],
+    "Market risk": [
+      "market risk",
+      "value at risk",
+      "frtb",
+      "trading risk",
+      "traded risk"
+    ],
+    "Investment banking": [
+      "investment bank",
+      "m&a",
+      "mergers and acquisitions",
+      "capital markets",
+      "corporate finance",
+      "equity research",
+      "leveraged finance"
+    ],
+    "AI/software": [
+      "machine learning",
+      "data scientist",
+      "ai engineer",
+      "ml engineer",
+      "software engineer",
+      "genai",
+      "generative ai",
+      "llm",
+      "python developer",
+      "data engineer"
+    ],
+    "Fintech": [
+      "fintech",
+      "payments",
+      "digital lending",
+      "neobank",
+      "lending platform"
+    ]
+  },
+  "industries": [
+    "Banking",
+    "Financial services",
+    "Fintech",
+    "Consulting",
+    "Technology",
+    "Global Capability Centres"
+  ],
+  "cities": [
+    "Bengaluru",
+    "Pune",
+    "Mumbai",
+    "Delhi NCR",
+    "Hyderabad",
+    "Chennai",
+    "Kolkata"
+  ],
+  "arrangements": [
+    "remote",
+    "hybrid",
+    "on-site"
+  ],
+  "min_salary_lpa": 25,
+  "premium_min_salary_lpa": 20,
+  "premium_employers": [
+    "Google",
+    "Microsoft",
+    "Meta",
+    "Amazon",
+    "Apple",
+    "Netflix"
+  ],
+  "allow_unknown_salary": true,
+  "seniority_min": 2,
+  "seniority_max": 4,
+  "excluded_companies": [],
+  "excluded_locations": [],
+  "excluded_keywords": [],
+  "weights": {
+    "role": 25,
+    "skills": 25,
+    "experience": 20,
+    "location": 15,
+    "compensation": 15
+  },
+  "search_frequency": "manual",
+  "automation_level": "assisted"
+}
