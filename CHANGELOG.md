@@ -1,5 +1,10 @@
 # Changelog
 
+## V 0.3.3
+- Correct the overly muted background with more visible blue/violet ribbons, lower-left purple and upper-right turquoise lighting, and subtle texture.
+- Reduce panel opacity so ambient colors remain visible through glass surfaces; preserve Inter typography and compact layouts.
+- Version the background URL as well as stylesheet/script URLs to avoid cached styling.
+
 ## V 0.3.2
 - Apply the user-specified Inter typography scale with a locally hosted variable font and its SIL Open Font License.
 - Add a lightweight original SVG background with deep blue base, diagonal purple/cyan ribbons, ambient glows and subtle star texture.
