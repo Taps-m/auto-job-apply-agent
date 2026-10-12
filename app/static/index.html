@@ -3,19 +3,19 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Personal Job Assistant</title>
-<link rel="stylesheet" href="/static/styles.css">
-<script src="/static/app.js" defer></script>
+<title>CareerAI — V 0.3.2</title>
+<link rel="stylesheet" href="/static/styles.css?v=0.3.2">
+<script src="/static/app.js?v=0.3.2" defer></script>
 </head>
 <body>
 <div class="shell">
   <nav class="sidebar" aria-label="Main">
-    <div class="brand">Personal Job Assistant <span id="version" class="muted"></span></div>
+    <div class="brand"><span class="brand-star" aria-hidden="true">✦</span><div>CareerAI<small>Your AI job search assistant</small><span id="version" class="muted"></span></div></div>
     <a href="#/home" data-nav="home">Home</a>
     <a href="#/jobs" data-nav="jobs">Jobs &amp; matches</a>
     <a href="#/applications" data-nav="applications">Applications</a>
     <a href="#/profile" data-nav="profile">Profile &amp; resume</a>
-    <a href="#/settings" data-nav="settings">Settings</a>
+    <a href="#/settings" data-nav="settings" class="settings-nav">Settings</a>
   </nav>
   <div class="main">
     <header class="topbar">
@@ -28,7 +28,9 @@
   </div>
   <aside id="chat" class="chat" aria-label="Gemini assistant">
     <div class="chat-head">
-      <strong>Assistant</strong>
+      <div class="agent-title"><span aria-hidden="true">✦</span><div><strong>Gemini Agent</strong><small>Your AI career assistant</small></div></div>
+    </div>
+    <div class="chat-history">
       <select id="chat-sessions" aria-label="Conversation"></select>
       <button type="button" class="ghost small" id="chat-new">New</button>
     </div>
@@ -37,8 +39,8 @@
     <div id="chat-actions"></div>
     <div id="chat-suggestions" class="chips"></div>
     <form id="chat-form">
-      <textarea name="message" rows="2" placeholder="Ask about jobs, fit, applications…" aria-label="Message"></textarea>
-      <button type="submit">Send</button>
+      <textarea name="message" rows="2" placeholder="Connect Gemini to start chatting…" aria-label="Message" disabled></textarea>
+      <button type="submit" disabled>Send</button>
     </form>
   </aside>
 </div>

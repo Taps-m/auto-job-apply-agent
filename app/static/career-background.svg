@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1672" height="941" viewBox="0 0 1672 941">
+ <defs>
+  <linearGradient id="base" x2="1" y2="1"><stop stop-color="#030b29"/><stop offset=".55" stop-color="#03142c"/><stop offset="1" stop-color="#030a24"/></linearGradient>
+  <radialGradient id="cyan"><stop stop-color="#00d7df" stop-opacity=".29"/><stop offset="1" stop-color="#00b4d7" stop-opacity="0"/></radialGradient>
+  <radialGradient id="purple"><stop stop-color="#5532ed" stop-opacity=".46"/><stop offset="1" stop-color="#3c1cbd" stop-opacity="0"/></radialGradient>
+  <linearGradient id="ribbon"><stop stop-color="#05cbd3" stop-opacity=".20"/><stop offset=".45" stop-color="#4143ed" stop-opacity=".16"/><stop offset="1" stop-color="#6740e9" stop-opacity=".25"/></linearGradient>
+  <linearGradient id="edge"><stop stop-color="#12e5de" stop-opacity=".65"/><stop offset=".4" stop-color="#6556ff" stop-opacity=".4"/><stop offset="1" stop-color="#3935d7" stop-opacity="0"/></linearGradient>
+  <filter id="blur"><feGaussianBlur stdDeviation="22"/></filter>
+  <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency=".7" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter>
+  <pattern id="stars" width="183" height="159" patternUnits="userSpaceOnUse"><circle cx="14" cy="52" r=".65" fill="#39d7eb" opacity=".3"/><circle cx="91" cy="21" r=".55" fill="#9bbafb" opacity=".2"/><circle cx="157" cy="123" r=".7" fill="#4ed4d6" opacity=".25"/><circle cx="41" cy="136" r=".4" fill="#8a88fc" opacity=".4"/><circle cx="117" cy="87" r=".45" fill="#80d4f3" opacity=".3"/></pattern>
+ </defs>
+ <path fill="url(#base)" d="M0 0h1672v941H0z"/>
+ <ellipse cx="25" cy="50" rx="285" ry="225" fill="url(#cyan)"/>
+ <ellipse cx="107" cy="545" rx="400" ry="480" fill="url(#purple)"/>
+ <ellipse cx="430" cy="540" rx="570" ry="430" fill="url(#purple)" opacity=".3"/>
+ <ellipse cx="1640" cy="375" rx="305" ry="480" fill="url(#cyan)"/>
+ <ellipse cx="1250" cy="22" rx="300" ry="160" fill="url(#purple)" opacity=".8"/>
+ <path d="M-140 120 720 805 635 907-170 325z" fill="url(#ribbon)"/>
+ <path d="M-140 190 715 870" stroke="url(#edge)" stroke-width="3" fill="none"/>
+ <path d="M-180 480 620 1090 403 1090-100 686z" fill="url(#ribbon)"/>
+ <path d="M-100 560 500 1010" stroke="url(#edge)" stroke-width="2" fill="none"/>
+ <path d="M1270-100 700 340 920 310 1430-90z" fill="url(#ribbon)" opacity=".55"/>
+ <path d="m1725 570-240 189 85 40 200-165z" fill="url(#ribbon)"/>
+ <path d="M-60 325 260 550" stroke="#0de8e5" stroke-opacity=".17" stroke-width="28" filter="url(#blur)"/>
+ <path fill="url(#stars)" d="M0 0h1672v941H0z"/>
+ <path filter="url(#grain)" opacity=".025" d="M0 0h1672v941H0z"/>
+</svg>

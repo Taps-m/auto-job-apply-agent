@@ -1,5 +1,19 @@
 # Changelog
 
+## V 0.3.2
+- Apply the user-specified Inter typography scale with a locally hosted variable font and its SIL Open Font License.
+- Add a lightweight original SVG background with deep blue base, diagonal purple/cyan ribbons, ambient glows and subtle star texture.
+- Adjust glass panel gradients, headings and chat typography while retaining compact cards and the 170px empty state.
+- Use the supplied midnight navy palette, component gradients, 16px glass blur, lower-left violet and upper-right turquoise lighting, restrained borders and selective cyan highlights.
+
+## V 0.3.1
+- Refine the current Python frontend with a dark navy theme, controlled central purple glow and subtle turquoise lighting behind Gemini.
+- Limit the home empty state to 170px and use compact reusable vacancy cards with one View Details action.
+- Show fit scores only when computed; keep detailed source, eligibility and application controls in job details.
+- Use a short conversational welcome, bottom composer and explicit disconnected Gemini setup state.
+- Disable chat and contextual prompts until a key is configured; preserve conversation history and approved-action controls.
+- Keep navigation actions in their existing modules and version frontend asset URLs to refresh cached files.
+
 ## V 0.3.0
 - Rebuild as a single Python app (FastAPI + SQLite) implementing the first slice of FRS v1.0; remove the Node.js server and the separate `dashboard.html` prototype.
 - Transparent weighted match scoring with per-factor reasons, data coverage, exclusions and skills gaps; salary rules carried over.

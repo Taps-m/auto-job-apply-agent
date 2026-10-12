@@ -1,6 +1,18 @@
 # Personal Job Assistant — Module Tracker
 
-Current release: **V 0.3.0** (Python/FastAPI + SQLite). Check an item only after implementation and verification.
+Current release: **V 0.3.2** (Python/FastAPI + SQLite). Check an item only after implementation and verification.
+
+## Reference background and typography — V 0.3.2
+- [x] Verify locally hosted Inter font loads and specified type scale (browser computed styles)
+- [x] Verify diagonal blue/purple/turquoise background and glass surfaces (desktop/mobile screenshots)
+
+## Frontend refinement — V 0.3.1
+- [x] Verify compact 170px home empty state
+- [x] Verify concise chat welcome, bottom composer and disconnected setup state
+- [x] Verify contextual chat prompts and retain existing module navigation
+- [x] Verify compact job cards and computed-only fit scores (browser-only fixtures, no saved sample jobs)
+- [x] Verify ambient lighting at desktop and mobile sizes; no horizontal overflow
+- [x] JavaScript syntax check and all 33 current backend tests pass
 
 ## Platform
 - [x] FastAPI backend, localhost only, host/origin checks, strict CSP

@@ -45,20 +45,18 @@ function scoreBadge(m) {
 
 function jobCard(j) {
   const m = j.match || {};
-  return `<div class="card">
-    <div class="row spread"><div><h3><a href="#/job/${j.id}">${esc(j.title)}</a></h3>
-      <div>${esc(j.company)} · ${esc(j.location || 'Location not stated')}${j.work_arrangement ? ` · ${esc(j.work_arrangement)}` : ''}</div></div>
-      <div>${scoreBadge(m)}</div></div>
-    <div class="row muted">${esc(lpa(j.salary_lpa))} · Source: <a href="${esc(safeUrl(j.source_url))}" target="_blank" rel="noopener noreferrer">${esc(j.source_name)}</a> · retrieved ${date(j.retrieved_at)}
-      ${j.status !== 'open' ? `<span class="badge warn">${esc(j.status)}</span>` : ''}${j.saved ? '<span class="badge">Saved</span>' : ''}
-      ${j.application ? `<span class="badge">${esc(STATUS_LABEL[j.application.status])}</span>` : ''}</div>
-    ${!m.eligible && m.blockers?.length ? `<div class="muted">Not eligible: ${esc(m.blockers.join('; '))}</div>` : ''}
-    <div class="row" style="margin-top:8px"><a class="button ghost small" href="#/job/${j.id}">View details</a></div>
-  </div>`;
+  const hasScore = Number.isFinite(m.score);
+  return `<article class="card job-card">
+    <div class="row spread job-heading"><div><div class="job-employer">${esc(j.company)}</div><h3>${esc(j.title)}</h3></div>
+      ${hasScore ? `<div>${scoreBadge(m)}</div>` : ''}</div>
+    <div class="job-meta"><span>${esc(j.location || 'Location not stated')}${j.work_arrangement ? ` · ${esc(j.work_arrangement)}` : ''}</span><span>${esc(lpa(j.salary_lpa))}</span></div>
+    <div class="row spread job-footer"><div class="row muted">${j.status !== 'open' ? `<span class="badge warn">${esc(j.status)}</span>` : ''}${j.saved ? '<span class="badge">Saved</span>' : ''}${j.application ? `<span class="badge">${esc(STATUS_LABEL[j.application.status])}</span>` : ''}</div>
+      <a class="button" href="#/job/${j.id}">View Details <span aria-hidden="true">→</span></a></div>
+  </article>`;
 }
 
 // ---------- state ----------
-const state = { screen: 'home', jobId: null, applicationId: null, sessionId: null };
+const state = { screen: 'home', jobId: null, applicationId: null, sessionId: null, geminiConnected: false, chatBusy: false };
 
 // ---------- router ----------
 const routes = {
@@ -85,13 +83,13 @@ async function renderHome() {
   $('#version').textContent = d.version;
   const c = d.completeness;
   view().innerHTML = `
-    <div class="row spread"><div><h1>${d.preferred_name ? `Hello, ${esc(d.preferred_name)}` : 'Welcome'}</h1>
-      <div class="muted">Your job search at a glance</div></div>
+    <div class="row spread welcome"><div><h1>${d.preferred_name ? `Hello, ${esc(d.preferred_name)}` : 'Welcome'}</h1>
+      <div class="muted">Your next career move, thoughtfully matched.</div></div>
       <a class="button ghost" href="#/profile">Edit preferences</a></div>
     ${c.percent < 100 ? `<div class="notice">Profile ${c.percent}% complete. Missing: ${esc(c.missing.join(', '))}. <a href="#/profile">Complete profile</a> for better matches.</div>` : ''}
     ${d.follow_ups_due ? `<div class="notice">${d.follow_ups_due} application follow-up(s) due. <a href="#/applications">Review</a></div>` : ''}
     <h2>Top matches</h2>
-    ${d.top_matches.length ? d.top_matches.map(jobCard).join('') : '<div class="empty">No eligible matches yet. Add vacancies you find on job sites and they will be ranked against your profile.</div>'}
+    ${d.top_matches.length ? d.top_matches.map(jobCard).join('') : '<div class="empty home-empty"><h3>Your next opportunity belongs here</h3><p>Matches will appear as vacancies become available. Discovery is not connected yet.</p><a href="#/jobs/add">Track an opportunity →</a></div>'}
     <div class="row"><a class="button" href="#/jobs">See all jobs</a><a class="button ghost" href="#/jobs/add">Add a job</a></div>
     <h2>Applications</h2>
     <div class="metrics">
@@ -468,17 +466,13 @@ async function loadSessions() {
 async function openSession(id) {
   state.sessionId = id;
   $('#chat-log').innerHTML = '';
-  if (!id) return;
+  if (!id) { appendMessage('model', state.geminiConnected ? 'Hi! Ask me about a job, your resume or your next career move.' : 'Hi! Connect Gemini in Settings to discuss jobs and review your resume.'); return; }
   for (const m of await api(`/api/chat/sessions/${id}`)) appendMessage(m.role, m.content);
 }
 
 async function loadSuggestions() {
-  const qs = new URLSearchParams({ screen: state.screen });
-  if (state.jobId) qs.set('job_id', state.jobId);
-  try {
-    const list = await api('/api/chat/suggestions?' + qs);
-    $('#chat-suggestions').innerHTML = list.map((s) => `<button type="button" data-suggest="${esc(s)}">${esc(s)}</button>`).join('');
-  } catch { $('#chat-suggestions').innerHTML = ''; }
+  const list = state.jobId ? ['Find similar jobs', 'Explain my fit for this job', 'Review my resume for this role', 'Prepare interview questions for this role'] : state.screen === 'profile' ? ['Review my resume', 'Suggest improvements to my profile'] : state.screen === 'applications' ? ['Analyze my application outcomes', 'Suggest an interview preparation plan'] : ['Find jobs matching my profile', 'Review my resume'];
+  $('#chat-suggestions').innerHTML = list.map((s) => `<button type="button" data-suggest="${esc(s)}" ${!state.geminiConnected || state.chatBusy ? 'disabled' : ''}>${esc(s)}</button>`).join('');
 }
 
 async function loadActions() {
@@ -490,8 +484,12 @@ async function loadActions() {
 
 async function sendMessage(text) {
   text = text.trim(); if (!text) return;
+  if (!state.geminiConnected) { toast('Connect Gemini in Settings to use chat'); return; }
+  if (state.chatBusy) return;
+  state.chatBusy = true;
   appendMessage('user', text);
   const btn = $('#chat-form button'); btn.disabled = true; btn.textContent = '…';
+  loadSuggestions();
   try {
     const r = await api('/api/chat', { method: 'POST', body: { message: text, session_id: state.sessionId, context: { screen: state.screen, job_id: state.jobId, application_id: state.applicationId } } });
     const isNew = !state.sessionId; state.sessionId = r.session_id;
@@ -499,7 +497,7 @@ async function sendMessage(text) {
     if (isNew) loadSessions();
     loadActions();
   } catch (e) { appendMessage('error', e.message); }
-  finally { btn.disabled = false; btn.textContent = 'Send'; }
+  finally { state.chatBusy = false; btn.disabled = !state.geminiConnected; btn.textContent = 'Send'; loadSuggestions(); }
 }
 
 function askAssistant(text) { $('#chat').classList.add('open'); sendMessage(text); }
@@ -507,7 +505,13 @@ function askAssistant(text) { $('#chat').classList.add('open'); sendMessage(text
 async function initChat() {
   const s = await api('/api/settings');
   $('#version').textContent = s.version;
-  $('#chat-status').innerHTML = s.gemini_connected ? '' : '<div class="notice">Gemini is not connected. <a href="#/settings">Set it up</a>.</div>';
+  state.geminiConnected = Boolean(s.gemini_connected);
+  $('#chat-status').innerHTML = state.geminiConnected ? '<span class="badge good">API key configured</span>' : '<div class="chat-setup"><span class="badge">Setup needed</span> <a href="#/settings">Connect Gemini →</a></div>';
+  $('#chat-form textarea').disabled = !state.geminiConnected;
+  $('#chat-form button').disabled = !state.geminiConnected;
+  $('#chat-form textarea').placeholder = state.geminiConnected ? 'Ask about this role or your next move…' : 'Connect Gemini to start chatting…';
+  await openSession(null);
+  loadSuggestions();
   await loadSessions(); loadActions();
   $('#chat-sessions').addEventListener('change', (e) => openSession(e.target.value ? Number(e.target.value) : null));
   $('#chat-new').addEventListener('click', () => { $('#chat-sessions').value = ''; openSession(null); });
