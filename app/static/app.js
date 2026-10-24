@@ -55,6 +55,28 @@ function jobCard(j) {
   </article>`;
 }
 
+function careerOverview(o) {
+  const facts = [
+    o.headline && esc(o.headline),
+    o.years_experience !== null && o.years_experience !== undefined && `${o.years_experience} years' experience`,
+    o.current_role && `currently ${esc(o.current_role)}`,
+  ].filter(Boolean);
+  const targets = [
+    o.target_roles.length && `Targeting ${esc(o.target_roles.join(', '))}`,
+    o.top_cities.length && `in ${esc(o.top_cities.join(', '))}`,
+    `from ₹${o.min_salary_lpa} LPA`,
+  ].filter(Boolean);
+  return `<div class="card overview">
+    ${facts.length ? `<p><b>${facts.join(' · ')}</b></p>` : '<p class="muted">Your career overview will appear when details from your resume are available.</p>'}
+    <p class="muted">${targets.join(' ')}</p>
+    <div class="metrics">
+      <div class="metric"><b>${o.tracked_jobs}</b>Jobs tracked</div>
+      <div class="metric"><b>${o.eligible_jobs}</b>Eligible matches</div>
+      <div class="metric"><b>${o.saved_jobs}</b>Saved</div>
+    </div></div>`;
+}
+
+
 // ---------- state ----------
 const state = { screen: 'home', jobId: null, applicationId: null, sessionId: null, geminiConnected: false, chatBusy: false };
 
@@ -89,8 +111,9 @@ async function renderHome() {
   view().innerHTML = `
     <div class="row spread welcome"><div><h1>${d.preferred_name ? `Hello, ${esc(d.preferred_name)}` : 'Welcome'}</h1>
       <div class="muted">Your next career move, thoughtfully matched.</div></div>
-      <a class="button ghost" href="#/profile">Edit preferences</a></div>
-    ${c.percent < 100 ? `<div class="notice">Profile ${c.percent}% complete. Missing: ${esc(c.missing.join(', '))}. <a href="#/profile">Complete profile</a> for better matches.</div>` : ''}
+      <a class="button ghost" href="#/profile/preferences">Edit preferences</a></div>
+    ${d.overview ? careerOverview(d.overview) : ''}
+    ${c.percent < 100 ? `<div class="notice">${c.missing.includes('Master resume uploaded') ? 'Upload your resume in <a href="#/profile">Profile &amp; resume</a> to get started.' : 'Some resume details are not yet available for matching.'}</div>` : ''}
     ${d.follow_ups_due ? `<div class="notice">${d.follow_ups_due} application follow-up(s) due. <a href="#/applications">Review</a></div>` : ''}
     <h2>Top matches</h2>
     ${d.top_matches.length ? d.top_matches.map(jobCard).join('') : '<div class="empty home-empty"><h3>Your next opportunity belongs here</h3><p>Matches will appear as vacancies become available. Discovery is not connected yet.</p><a href="#/jobs/add">Track an opportunity →</a></div>'}
@@ -242,6 +265,7 @@ async function renderApplications() {
   const due = new Set(d.follow_ups_due);
   view().innerHTML = `
     <h1>Applications</h1>
+    <section id="application-progress" class="card application-progress" aria-label="Application success dashboard"><h2>Application success</h2><p class="muted">Loading progress…</p></section>
     <div class="metrics">
       <div class="card metric"><b>${d.metrics.submitted}</b>Confirmed submissions</div>
       <div class="card metric"><b>${d.metrics.interviews}</b>Interviews or offers</div>
@@ -253,6 +277,7 @@ async function renderApplications() {
         <td><span class="badge">${esc(STATUS_LABEL[a.status])}</span></td><td>${date(a.updated_at)}</td>
         <td>${a.follow_up_on ? `${due.has(a.id) ? '<span class="badge warn">Due</span> ' : ''}${esc(a.follow_up_on)}` : '—'}</td></tr>`).join('')}</table></div>`
       : '<div class="empty">No applications yet. Open a job and choose “Start application”.</div>'}`;
+  await refreshApplicationProgress();
 }
 
 async function renderApplication(id) {

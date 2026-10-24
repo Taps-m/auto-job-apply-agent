@@ -1,8 +1,14 @@
 from fastapi import APIRouter, Body
 
 from . import service
+from . import analytics
 
 router = APIRouter(prefix="/api/applications", tags=["applications"])
+
+
+@router.get('/progress')
+def application_progress():
+    return analytics.progress()
 
 
 @router.get("")

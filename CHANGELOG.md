@@ -1,5 +1,13 @@
 # Changelog
 
+## V 0.5.0
+- Replace sidebar with horizontal top navigation; keep Gemini on Home only.
+- Add the Applications tab success chart: X = profile match percentage, Y = confirmed applications; refresh every 15 seconds while that tab is open.
+- Show response and interview rates with explicit denominators and an honest empty state.
+- Capture scores when submissions are confirmed; label legacy current scores and unscored applications.
+- Add sparse, slow maple leaves with stems and veins, with a natural 20–50px size mix behind content, with transform-only animations, no pointer interception and reduced-motion support.
+- Remove obsolete Home instructions to enter headline/experience in the simplified upload-only Profile page.
+
 ## V 0.4.4
 - Record the user's weekly application-report preference. Automated report generation and delivery remain pending.
 

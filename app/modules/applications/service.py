@@ -149,6 +149,8 @@ def confirm_submitted(app_id: int, confirmation: str, user_id=USER_ID) -> dict:
     with tx() as c:
         _update(c, app_id, status="submitted", submitted_at=now(), confirmation=confirmation)
         _event(c, app_id, "submitted", f"Confirmed: {confirmation}")
+        from .analytics import snapshot
+        snapshot(c, app_id, (a['job'].get('match') or {}).get('score'))
     return get(app_id, user_id)
 
 

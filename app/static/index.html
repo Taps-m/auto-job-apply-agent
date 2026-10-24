@@ -3,9 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>CareerAI — V 0.4.2</title>
-<link rel="stylesheet" href="/static/styles.css?v=0.4.2">
-<script src="/static/app.js?v=0.4.2" defer></script>
+<title>CareerAI — V 0.5.0</title>
+<link rel="stylesheet" href="/static/styles.css?v=0.5.0">
+<link rel="stylesheet" href="/static/dashboard-visuals.css?v=0.5.0">
+<script src="/static/app.js?v=0.5.0" defer></script>
+<script src="/static/dashboard-visuals.js?v=0.5.0" defer></script>
 </head>
 <body>
 <header class="app-header">
@@ -20,8 +22,7 @@
   </form>
   <button type="button" class="ghost" id="chat-toggle" aria-controls="chat">Assistant</button>
 </header>
-<div class="shell">
-  <nav class="sidebar" aria-label="Main">
+  <nav class="top-navigation" aria-label="Main">
     <a href="#/home" data-nav="home">Home</a>
     <a href="#/jobs" data-nav="jobs">Jobs &amp; matches</a>
     <a href="#/applications" data-nav="applications">Applications</a>
@@ -29,6 +30,8 @@
     <span id="version" class="sidebar-version muted"></span>
     <a href="#/settings" data-nav="settings" class="settings-nav">Settings</a>
   </nav>
+<div class="shell">
+
   <div class="main">
     <main id="view" tabindex="-1"></main>
   </div>
