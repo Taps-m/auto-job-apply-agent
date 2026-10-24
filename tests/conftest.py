@@ -5,6 +5,7 @@ import tempfile
 # Isolate tests from real data and from any real Gemini key before the app is imported.
 os.environ["PJA_DATA_DIR"] = tempfile.mkdtemp(prefix="pja-test-")
 os.environ["GEMINI_API_KEY"] = ""
+os.environ["PJA_DISABLE_DISCOVERY"] = "1"
 
 import pytest  # noqa: E402
 from fastapi.testclient import TestClient  # noqa: E402

@@ -1,5 +1,13 @@
 # Changelog
 
+## V 0.6.0
+- Connect the official Himalayas public job API for India-compatible remote vacancies.
+- Add Search now, live progress and manual/daily/weekly scheduling while the server runs.
+- Deduplicate and score discovered vacancies; retain source attribution and original application links.
+- Preserve advertised pay without treating foreign/base pay as verified INR CTC; hide expired imported vacancies.
+- Keep other portals and automatic submission explicitly unconnected.
+
+
 ## V 0.5.1
 - Add a bottom copyright bar displaying Copyright @Tapomoy 2026.
 

@@ -23,7 +23,10 @@ def dedupe_key(company: str, title: str, location: str) -> str:
 
 
 def with_match(c, j: dict, user_id=USER_ID) -> dict:
+    from ..discovery.service import ensure
+    ensure(c)
     j = matching.decode_job(j)
+    j["discovery"] = row(c.execute("SELECT guid,expires_at,salary_text FROM discovered_jobs WHERE job_id=?", (j["id"],)).fetchone())
     j["match"] = matching.get_match(c, j["id"], user_id)
     j["saved"] = c.execute("SELECT 1 FROM saved_jobs WHERE job_id=? AND user_id=?",
                            (j["id"], user_id)).fetchone() is not None
@@ -82,6 +85,8 @@ def add_job(data: dict, user_id=USER_ID) -> dict:
 
 def get_job(job_id: int, user_id=USER_ID) -> dict:
     with tx() as c:
+        from ..discovery.service import expire
+        expire(c)
         j = row(c.execute("SELECT * FROM job_postings WHERE id=?", (job_id,)).fetchone())
         if not j:
             raise ServiceError("Job not found", 404)
@@ -123,8 +128,12 @@ def search(q: str = "", location: str = "", remote: bool = False, min_salary=Non
     keywords = interpreted["keywords"].lower().split()
     out = []
     with tx() as c:
+        from ..discovery.service import expire
+        expire(c)
         for j in rows(c.execute("SELECT * FROM job_postings ORDER BY retrieved_at DESC")):
             j = with_match(c, j, user_id)
+            if j.get("discovery") and j["status"] == "expired":
+                continue
             m = j["match"] or {}
             hay = " ".join([j["title"], j["company"], j["description"], *j["required_skills"],
                             *j["preferred_skills"]]).lower()

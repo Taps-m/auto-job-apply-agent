@@ -1,24 +1,74 @@
 {
   "name": "Personal Job Assistant",
-  "version": "V 0.5.1",
+  "version": "V 0.6.0",
   "host": "127.0.0.1",
   "port": 8765,
-  "extra_allowed_hosts": ["testserver"],
+  "extra_allowed_hosts": [
+    "testserver"
+  ],
   "content_security_policy": "default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; frame-ancestors 'none'",
   "max_upload_mb": 10,
-  "allowed_document_types": {".pdf": "%PDF", ".docx": "PK"},
-  "link_check": {"timeout_seconds": 10, "user_agent": "PersonalJobAssistant/0.3 (link check)"},
-  "profile_seed": {"github_url": "https://github.com/Taps-m", "website_url": "https://dastapomoy.com/"},
-  "gemini": {"default_model": "gemini-2.5-flash", "max_tool_rounds": 6, "history_messages": 20},
+  "allowed_document_types": {
+    ".pdf": "%PDF",
+    ".docx": "PK"
+  },
+  "link_check": {
+    "timeout_seconds": 10,
+    "user_agent": "PersonalJobAssistant/0.3 (link check)"
+  },
+  "profile_seed": {
+    "github_url": "https://github.com/Taps-m",
+    "website_url": "https://dastapomoy.com/"
+  },
+  "gemini": {
+    "default_model": "gemini-2.5-flash",
+    "max_tool_rounds": 6,
+    "history_messages": 20
+  },
   "job_sources": [
-    {"name": "Manual entry", "status": "Enabled"},
-    {"name": "HiringCafe", "status": "Not connected"},
-    {"name": "Welcome to the Jungle", "status": "Not connected"},
-    {"name": "Himalayas", "status": "Not connected"},
-    {"name": "Work at a Startup", "status": "Not connected"},
-    {"name": "Glassdoor", "status": "Not connected"},
-    {"name": "LinkedIn", "status": "Not connected"},
-    {"name": "ZipRecruiter", "status": "Not connected"}
+    {
+      "name": "Manual entry",
+      "status": "Enabled"
+    },
+    {
+      "name": "HiringCafe",
+      "status": "Not connected"
+    },
+    {
+      "name": "Welcome to the Jungle",
+      "status": "Not connected"
+    },
+    {
+      "name": "Himalayas",
+      "status": "Public API connected (India-compatible remote jobs)"
+    },
+    {
+      "name": "Work at a Startup",
+      "status": "Not connected"
+    },
+    {
+      "name": "Glassdoor",
+      "status": "Not connected"
+    },
+    {
+      "name": "LinkedIn",
+      "status": "Not connected"
+    },
+    {
+      "name": "ZipRecruiter",
+      "status": "Not connected"
+    }
   ],
-  "modules": ["ui", "home", "jobs", "matching", "applications", "documents", "profile", "agent", "settings"]
+  "modules": [
+    "ui",
+    "home",
+    "jobs",
+    "matching",
+    "applications",
+    "documents",
+    "profile",
+    "agent",
+    "settings",
+    "discovery"
+  ]
 }

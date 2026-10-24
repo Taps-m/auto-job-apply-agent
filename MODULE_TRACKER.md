@@ -1,5 +1,13 @@
 # Personal Job Assistant — Module Tracker
 
+## Job discovery — V 0.6.0
+- [x] Connect official Himalayas public API and verify live India-compatible results
+- [x] Add manual search and daily/weekly scheduling while the app runs
+- [x] Deduplicate, score, retain source links and handle rate-limit failures
+- [x] Show progress on Home and Jobs; verify desktop/mobile rendering
+- [ ] Connect remaining portals and browser sign-ins
+- [ ] Implement permitted automatic submissions and confirmation receipts
+
 ## Application dashboard and navigation — V 0.5.0
 - [x] Verify confirmed-only counts, snapshot stability and empty/unknown-score states (14 targeted tests pass)
 - [x] Verify chart placement in Applications, refresh and success metrics

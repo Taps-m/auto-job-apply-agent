@@ -49,7 +49,8 @@ function jobCard(j) {
   return `<article class="card job-card">
     <div class="row spread job-heading"><div><div class="job-employer">${esc(j.company)}</div><h3>${esc(j.title)}</h3></div>
       ${hasScore ? `<div>${scoreBadge(m)}</div>` : ''}</div>
-    <div class="job-meta"><span>${esc(j.location || 'Location not stated')}${j.work_arrangement ? ` · ${esc(j.work_arrangement)}` : ''}</span><span>${esc(lpa(j.salary_lpa))}</span></div>
+    <div class="job-meta"><span>${esc(j.location || 'Location not stated')}${j.work_arrangement ? ` · ${esc(j.work_arrangement)}` : ''}</span><span>${esc(j.discovery && j.salary_lpa == null ? 'See advertised pay in details' : lpa(j.salary_lpa))}</span></div>
+    ${j.discovery ? `<p class="muted">Source: <a href="${esc(safeUrl(j.discovery.guid))}" target="_blank" rel="noopener noreferrer">Himalayas</a></p>` : ''}
     <div class="row spread job-footer"><div class="row muted">${j.status !== 'open' ? `<span class="badge warn">${esc(j.status)}</span>` : ''}${j.saved ? '<span class="badge">Saved</span>' : ''}${j.application ? `<span class="badge">${esc(STATUS_LABEL[j.application.status])}</span>` : ''}</div>
       <a class="button" href="#/job/${j.id}">View Details <span aria-hidden="true">→</span></a></div>
   </article>`;
@@ -116,7 +117,7 @@ async function renderHome() {
     ${c.percent < 100 ? `<div class="notice">${c.missing.includes('Master resume uploaded') ? 'Upload your resume in <a href="#/profile">Profile &amp; resume</a> to get started.' : 'Some resume details are not yet available for matching.'}</div>` : ''}
     ${d.follow_ups_due ? `<div class="notice">${d.follow_ups_due} application follow-up(s) due. <a href="#/applications">Review</a></div>` : ''}
     <h2>Top matches</h2>
-    ${d.top_matches.length ? d.top_matches.map(jobCard).join('') : '<div class="empty home-empty"><h3>Your next opportunity belongs here</h3><p>Matches will appear as vacancies become available. Discovery is not connected yet.</p><a href="#/jobs/add">Track an opportunity →</a></div>'}
+    ${d.top_matches.length ? d.top_matches.map(jobCard).join('') : '<div class="empty home-empty"><h3>Your next opportunity belongs here</h3><p>Run a search above to discover vacancies and calculate matches.</p><a href="#/jobs/add">Track an opportunity →</a></div>'}
     <div class="row"><a class="button" href="#/jobs">See all jobs</a><a class="button ghost" href="#/jobs/add">Add a job</a></div>
     <h2>Applications</h2>
     <div class="metrics">
@@ -172,7 +173,7 @@ async function renderJobs(sub) {
       <div class="row"><button type="submit">Apply filters</button><a class="button ghost" href="#/jobs">Clear</a></div>
     </form>
     ${res.interpreted.keywords || res.interpreted.location || res.interpreted.min_salary ? `<p class="muted">Interpreted as: ${esc([res.interpreted.keywords && `keywords “${res.interpreted.keywords}”`, res.interpreted.location && `in ${res.interpreted.location}`, res.interpreted.remote && 'remote', res.interpreted.min_salary && `≥ ₹${res.interpreted.min_salary} LPA`].filter(Boolean).join(', '))}</p>` : ''}
-    <p class="muted">${res.jobs.length} vacancies, ranked by estimated fit. Automatic discovery from job sites is not connected yet; add vacancies manually.</p>
+    <p class="muted">${res.jobs.length} vacancies, ranked by estimated fit. Use Search now to discover India-compatible remote vacancies from Himalayas.</p>
     ${res.jobs.length ? res.jobs.map(jobCard).join('') : '<div class="empty">No vacancies match.</div>'}`;
   $('#job-filters').addEventListener('submit', (e) => {
     e.preventDefault();

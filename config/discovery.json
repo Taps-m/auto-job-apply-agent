@@ -1,0 +1,13 @@
+{
+  "country": "IN",
+  "pages_per_query": 3,
+  "request_interval_seconds": 1.1,
+  "queries": {
+    "Credit risk": ["credit risk", "credit analyst"],
+    "Market risk": ["market risk"],
+    "Investment banking": ["investment banking", "corporate finance"],
+    "AI/software": ["software engineer", "machine learning", "AI engineer"],
+    "Fintech": ["fintech", "payments"],
+    "Global Capability Centres": ["global capability centre"]
+  }
+}

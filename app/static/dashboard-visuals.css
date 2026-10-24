@@ -19,3 +19,5 @@ body:not([data-screen="home"]) .shell{grid-template-columns:minmax(0,1fr)}
 @media(max-width:700px){.app-header{height:auto;position:static;flex-wrap:wrap;gap:12px;padding:12px 14px}.app-brand-name{font-size:22px}.app-brand-star{font-size:28px}.app-search{order:3;flex-basis:100%;height:50px}.app-search input{font-size:15px}.app-brand-tag{font-size:12px}}
 
 .copyright-bar{position:relative;z-index:1;padding:14px 20px;text-align:center;color:#a5b8d3;font:400 13px/1.5 Inter,sans-serif;background:rgba(7,23,47,.82);border-top:1px solid rgba(55,187,225,.18);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+
+.discovery-panel{margin-bottom:20px}.discovery-panel h2{margin:0;font-size:20px}.discovery-panel p{font-size:13px;margin:8px 0}.discovery-panel select{width:auto;margin-left:8px}
