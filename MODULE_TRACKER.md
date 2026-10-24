@@ -1,12 +1,19 @@
 # Personal Job Assistant — Module Tracker
 
+## Simple profile — V 0.4.0
+- [ ] Verify resume upload, optional photo and professional links only
+- [x] Verify link saving preserves career facts and matching preferences
+- [x] Verify photo validation, removal and privacy deletion
+- [ ] Verify search preferences remain accessible in Settings
+
+
 ## Background correction — V 0.3.3
 - [x] Strengthen reference-inspired violet/cyan lighting and diagonal texture
 - [x] Verify rendered jobs page and locally loaded Inter font
 - [x] Verify desktop/mobile layout has no horizontal overflow
 
 
-Current release: **V 0.3.3** (Python/FastAPI + SQLite). Check an item only after implementation and verification.
+Current release: **V 0.4.0** (Python/FastAPI + SQLite). Check an item only after implementation and verification.
 
 ## Reference background and typography — V 0.3.2
 - [x] Verify locally hosted Inter font loads and specified type scale (browser computed styles)

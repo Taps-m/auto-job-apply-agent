@@ -45,6 +45,8 @@ def delete_all_data(confirm: str, user_id=USER_ID) -> None:
         raise ServiceError("Type DELETE to confirm")
     documents.delete_files(user_id)
     with tx() as c:
+        if c.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='profile_assets'").fetchone():
+            c.execute('DELETE FROM profile_assets WHERE user_id=?', (user_id,))
         for table in USER_TABLES:
             c.execute(f"DELETE FROM {table} WHERE user_id=?", (user_id,))
         c.execute("DELETE FROM job_postings")

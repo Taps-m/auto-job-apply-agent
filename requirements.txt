@@ -4,3 +4,4 @@ python-multipart==0.0.32
 google-genai==2.29.0
 httpx==0.28.1
 pytest==9.1.1
+Pillow>=11.0,<13

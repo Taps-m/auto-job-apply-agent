@@ -1,5 +1,11 @@
 # Changelog
 
+## V 0.4.0
+- Simplify Profile & resume to resume upload/replacement, optional photo and professional links only.
+- Preserve existing profile facts and matching preferences; saving links cannot erase career data.
+- Move search preferences to Settings; retain existing resume/document backend workflows.
+- Store normalized profile photos locally with file validation and removal controls; privacy deletion also removes photos and links.
+
 ## V 0.3.3
 - Correct the overly muted background with more visible blue/violet ribbons, lower-left purple and upper-right turquoise lighting, and subtle texture.
 - Reduce panel opacity so ambient colors remain visible through glass surfaces; preserve Inter typography and compact layouts.

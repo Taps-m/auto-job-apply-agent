@@ -3,27 +3,33 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>CareerAI — V 0.3.3</title>
-<link rel="stylesheet" href="/static/styles.css?v=0.3.3">
-<script src="/static/app.js?v=0.3.3" defer></script>
+<title>CareerAI — V 0.4.0</title>
+<link rel="stylesheet" href="/static/styles.css?v=0.4.0">
+<script src="/static/app.js?v=0.4.0" defer></script>
 </head>
 <body>
+<header class="app-header">
+  <a class="app-brand" href="#/home" aria-label="CareerAI home">
+    <span class="app-brand-star" aria-hidden="true">✦</span>
+    <span><span class="app-brand-name">CareerAI</span><span class="app-brand-tag">Your AI Job Search Agent</span></span>
+  </a>
+  <form id="global-search" class="app-search" role="search">
+    <svg class="app-search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+    <input name="q" type="search" placeholder="Tell me what kind of jobs you're looking for…" aria-label="Search jobs">
+    <button type="submit" class="app-search-go" aria-label="Search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></button>
+  </form>
+  <button type="button" class="ghost" id="chat-toggle" aria-controls="chat">Assistant</button>
+</header>
 <div class="shell">
   <nav class="sidebar" aria-label="Main">
-    <div class="brand"><span class="brand-star" aria-hidden="true">✦</span><div>CareerAI<small>Your AI job search assistant</small><span id="version" class="muted"></span></div></div>
     <a href="#/home" data-nav="home">Home</a>
     <a href="#/jobs" data-nav="jobs">Jobs &amp; matches</a>
     <a href="#/applications" data-nav="applications">Applications</a>
     <a href="#/profile" data-nav="profile">Profile &amp; resume</a>
+    <span id="version" class="sidebar-version muted"></span>
     <a href="#/settings" data-nav="settings" class="settings-nav">Settings</a>
   </nav>
   <div class="main">
-    <header class="topbar">
-      <form id="global-search" role="search">
-        <input name="q" type="search" placeholder="Search jobs, e.g. credit risk jobs in Kolkata above 30 LPA" aria-label="Search jobs">
-      </form>
-      <button type="button" class="ghost" id="chat-toggle" aria-controls="chat">Assistant</button>
-    </header>
     <main id="view" tabindex="-1"></main>
   </div>
   <aside id="chat" class="chat" aria-label="Gemini assistant">

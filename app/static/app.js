@@ -307,51 +307,46 @@ async function renderApplication(id) {
 }
 
 // ---------- M06/M07 Profile, preferences, documents ----------
-async function renderProfile() {
-  const [b, docs] = await Promise.all([api('/api/profile'), api('/api/documents')]);
-  const p = b.profile, pr = b.preferences;
-  const list = (v) => esc((v || []).join(', '));
+async function renderProfile(section) {
+  if (section === 'preferences') { location.hash = '#/settings/preferences'; return; }
+  const [docs, assets] = await Promise.all([api('/api/documents'), api('/api/profile/assets')]);
+  const resume = docs.find(d => d.source === 'upload' && d.is_master) || docs.find(d => d.source === 'upload');
   view().innerHTML = `
-    <h1>Profile &amp; resume</h1>
-    <div class="notice">Profile ${b.completeness.percent}% complete${b.completeness.missing.length ? ` · missing: ${esc(b.completeness.missing.join(', '))}` : ''}.
-      These are your verified facts: the assistant may reword them but never adds to them.</div>
-    <h2>Career profile</h2>
-    <form id="profile" class="card stack">
-      <div class="grid">
-        <label>Preferred name<input name="preferred_name" value="${esc(p.preferred_name)}"></label>
-        <label>Headline<input name="headline" value="${esc(p.headline)}" placeholder="e.g. Credit risk analyst"></label>
-        <label>Years of experience<input name="years_experience" type="number" min="0" max="60" step="0.5" value="${esc(p.years_experience ?? '')}"></label>
-        <label>Notice period (months)<input name="notice_months" type="number" min="0" max="12" value="${esc(p.notice_months ?? '')}"></label>
-        <label>GitHub<input name="github_url" value="${esc(p.github_url)}"></label>
-        <label>Website<input name="website_url" value="${esc(p.website_url)}"></label>
-        <label>Work authorization<input name="work_authorization" value="${esc(p.work_authorization)}"></label>
-      </div>
-      <label>Skills (comma separated)<textarea name="skills" rows="2">${list(p.skills)}</textarea></label>
-      <label>Summary<textarea name="summary" rows="3">${esc(p.summary)}</textarea></label>
-      <label>Career goals<textarea name="career_goals" rows="2">${esc(p.career_goals)}</textarea></label>
-      <div><button type="submit">Save profile</button></div>
-    </form>
-    <h2>Work history</h2>
-    <div class="card">
-      ${b.experiences.length ? `<table>${b.experiences.map((e) => `<tr><td><b>${esc(e.role)}</b>, ${esc(e.employer)}<div class="muted">${esc(e.start_date)} – ${esc(e.end_date || 'present')}</div><pre class="text">${esc(e.achievements)}</pre></td><td><button type="button" class="ghost small" data-del-exp="${e.id}">Remove</button></td></tr>`).join('')}</table>` : '<p class="muted">No roles added.</p>'}
-      <form id="exp" class="stack" style="margin-top:12px"><div class="grid">
-        <label>Employer<input name="employer" required></label><label>Role<input name="role" required></label>
-        <label>Start<input name="start_date" type="month"></label><label>End (empty if current)<input name="end_date" type="month"></label></div>
-        <label>Achievements (facts only)<textarea name="achievements" rows="3"></textarea></label>
-        <div><button type="submit">Add role</button></div></form>
-    </div>
-    <h2>Resume</h2>
-    <div class="card stack">
-      ${docs.length ? `<table>${docs.map((d) => `<tr><td><a href="/api/documents/${d.id}/file" target="_blank">${esc(d.filename)}</a> ${d.is_master ? '<span class="badge good">Master</span>' : ''}</td><td class="muted">${date(d.uploaded_at)}</td><td>${d.is_master ? '' : `<button type="button" class="ghost small" data-master="${d.id}">Make master</button>`}</td></tr>`).join('')}</table>` : '<p class="muted">No resume uploaded.</p>'}
-      <form id="upload" class="row"><input type="file" name="file" accept=".pdf,.docx" required style="flex:1"><button type="submit">Upload as master</button></form>
-      <p class="muted">PDF or DOCX, up to 10 MB, stored only on this computer. Automatic resume parsing and tailored resume export arrive in a later version.</p>
-    </div>
-    <h2>Job preferences</h2>
+    <h1>Profile &amp; resume</h1><p class="muted">Your resume, photo and professional links.</p>
+    <section class="card stack"><h2 class="profile-section-title">Resume</h2>
+      ${resume ? `<p><a href="/api/documents/${resume.id}/file" target="_blank" rel="noopener">${esc(resume.filename)}</a> <span class="badge good">Uploaded</span></p>` : '<p class="muted">Upload your latest resume to get started.</p>'}
+      <form id="upload" class="stack"><label>Choose resume<input type="file" name="file" accept=".pdf,.docx" required></label><p class="muted">PDF or DOCX · up to 10 MB</p><button type="submit">${resume ? 'Replace resume' : 'Upload resume'}</button></form>
+    </section>
+    <section class="card stack"><h2 class="profile-section-title">Photo <span class="muted optional-label">Optional</span></h2>
+      ${assets.has_photo ? `<img class="profile-photo" src="/api/profile/photo?t=${Date.now()}" alt="Your profile photo">` : ''}
+      <form id="photo-upload" class="stack"><label>Choose photo<input type="file" name="file" accept="image/jpeg,image/png,image/webp" required></label><p class="muted">JPG, PNG or WebP · up to 5 MB</p><div class="row"><button type="submit">${assets.has_photo ? 'Replace photo' : 'Upload photo'}</button>${assets.has_photo ? '<button type="button" class="ghost" id="remove-photo">Remove photo</button>' : ''}</div></form>
+    </section>
+    <section class="card stack"><h2 class="profile-section-title">Professional links</h2><form id="professional-links" class="stack"><div class="grid">
+      ${[['website_url','Personal website'],['linkedin_url','LinkedIn'],['github_url','GitHub'],['other_url','Other professional link']].map(([name,label])=>`<label>${label}<input type="url" name="${name}" value="${esc(assets.links[name] || '')}" placeholder="https://" maxlength="500"></label>`).join('')}
+      </div><button type="submit">Save links</button></form></section>`;
+  const upload = (selector, endpoint, message) => $(selector).addEventListener('submit', async e => {
+    e.preventDefault(); const button = e.target.querySelector('button[type="submit"]'); button.disabled = true;
+    const fd = new FormData(e.target); if (endpoint === '/api/documents') fd.set('is_master','true');
+    try { await api(endpoint,{method:'POST',body:fd}); toast(message); await route(); }
+    catch(err) { toast(err.message); button.disabled = false; }
+  });
+  upload('#upload','/api/documents','Resume uploaded');
+  upload('#photo-upload','/api/profile/photo','Photo uploaded');
+  $('#remove-photo')?.addEventListener('click',async()=>{try{await api('/api/profile/photo',{method:'DELETE'});route();}catch(e){toast(e.message);}});
+  $('#professional-links').addEventListener('submit',async e=>{e.preventDefault();try{await api('/api/profile/links',{method:'PUT',body:formData(e.target)});toast('Links saved');}catch(err){toast(err.message);}});
+}
+
+async function renderPreferences() {
+  const b = await api('/api/profile');
+  const pr = b.preferences;
+  const list = v => esc((v || []).join(', '));
+  const save = async (path, body, method = 'PUT') => { try { await api(path, { method, body }); toast('Saved'); route(); } catch (e) { toast(e.message); } };
+  view().innerHTML = `<p><a href="#/settings">← Settings</a></p>    <h2>Job preferences</h2>
     <form id="prefs" class="card stack">
       <label>Target roles (comma separated)<input name="roles" value="${list(pr.roles)}"></label>
-      <label>Industries<input name="industries" value="${list(pr.industries)}"></label>
+      <label>Industries, most important first<input name="industries" value="${list(pr.industries)}"></label>
       <label>Preferred cities, most preferred first<input name="cities" value="${list(pr.cities)}"></label>
-      <div class="row">${['remote', 'hybrid', 'on-site'].map((a) => `<label class="check"><input type="checkbox" data-group="arrangements" name="arr_${a}" value="${a}" ${pr.arrangements.includes(a) ? 'checked' : ''}> ${a}</label>`).join('')}</div>
+      <label>Work arrangements you accept, most preferred first (remote, hybrid, on-site)<input name="arrangements" value="${list(pr.arrangements)}"></label>
       <div class="grid">
         <label>Minimum salary (₹ LPA)<input name="min_salary_lpa" type="number" min="0" step="0.5" value="${pr.min_salary_lpa}"></label>
         <label>Minimum for premium employers<input name="premium_min_salary_lpa" type="number" min="0" step="0.5" value="${pr.premium_min_salary_lpa}"></label>
@@ -364,41 +359,33 @@ async function renderProfile() {
       <div class="grid">
         <label>Companies<input name="excluded_companies" value="${list(pr.excluded_companies)}"></label>
         <label>Locations<input name="excluded_locations" value="${list(pr.excluded_locations)}"></label>
+        <label>Role categories (matched in job titles)<input name="excluded_roles" value="${list(pr.excluded_roles)}"></label>
         <label>Keywords<input name="excluded_keywords" value="${list(pr.excluded_keywords)}"></label>
       </div>
       <h3>Scoring weights</h3>
       <div class="grid">${Object.entries(pr.weights).map(([k, v]) => `<label>${esc(k)}<input name="w_${k}" type="number" min="0" max="100" value="${v}"></label>`).join('')}</div>
       <div><button type="submit">Save preferences</button></div>
     </form>`;
-
-  const save = async (path, body, method = 'PUT') => { try { await api(path, { method, body }); toast('Saved'); route(); } catch (e) { toast(e.message); } };
-  $('#profile').addEventListener('submit', (e) => { e.preventDefault(); save('/api/profile', formData(e.target)); });
-  $('#exp').addEventListener('submit', (e) => { e.preventDefault(); save('/api/profile/experiences', formData(e.target), 'POST'); });
-  view().querySelectorAll('[data-del-exp]').forEach((b) => b.addEventListener('click', () => save(`/api/profile/experiences/${b.dataset.delExp}`, undefined, 'DELETE')));
-  view().querySelectorAll('[data-master]').forEach((b) => b.addEventListener('click', () => save(`/api/documents/${b.dataset.master}/master`, undefined, 'POST')));
-  $('#upload').addEventListener('submit', async (e) => {
-    e.preventDefault(); const fd = new FormData(e.target); fd.set('is_master', 'true');
-    try { await api('/api/documents', { method: 'POST', body: fd }); toast('Resume uploaded'); route(); } catch (err) { toast(err.message); }
-  });
   $('#prefs').addEventListener('submit', (e) => {
     e.preventDefault(); const f = formData(e.target); const weights = {};
     for (const k of Object.keys(pr.weights)) weights[k] = Number(f[`w_${k}`]);
     save('/api/preferences', {
-      roles: f.roles, industries: f.industries, cities: f.cities, arrangements: f.arrangements || [],
+      roles: f.roles, industries: f.industries, cities: f.cities, arrangements: f.arrangements,
       min_salary_lpa: f.min_salary_lpa, premium_min_salary_lpa: f.premium_min_salary_lpa,
       seniority_min: Number(f.seniority_min), seniority_max: Number(f.seniority_max),
       allow_unknown_salary: f.allow_unknown_salary, premium_employers: f.premium_employers,
-      excluded_companies: f.excluded_companies, excluded_locations: f.excluded_locations, excluded_keywords: f.excluded_keywords, weights,
+      excluded_companies: f.excluded_companies, excluded_locations: f.excluded_locations, excluded_roles: f.excluded_roles, excluded_keywords: f.excluded_keywords, weights,
     });
   });
 }
 
 // ---------- M08 Settings ----------
-async function renderSettings() {
+async function renderSettings(section) {
+  if (section === 'preferences') { await renderPreferences(); return; }
   const s = await api('/api/settings');
   const u = s.usage;
   view().innerHTML = `
-    <h1>Settings</h1>
+    <h1>Settings</h1><p><a href="#/settings/preferences">Search preferences →</a></p>
     <h2>Gemini</h2>
     <div class="card stack">
       <p>Status: ${s.gemini_connected ? '<span class="badge good">API key configured</span>' : '<span class="badge warn">Not connected</span>'}</p>
