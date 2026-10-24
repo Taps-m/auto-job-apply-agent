@@ -1,5 +1,10 @@
 # Personal Job Assistant — Module Tracker
 
+## Home-only Gemini — V 0.4.1
+- [x] Browser verification: Gemini visible on Home and hidden on Profile, Jobs, Applications and Settings
+- [x] Other desktop pages use freed width; mobile Assistant toggle hidden outside Home
+- [x] JavaScript syntax check; no browser page errors
+
 ## Simple profile — V 0.4.0
 - [ ] Verify resume upload, optional photo and professional links only
 - [x] Verify link saving preserves career facts and matching preferences
@@ -13,7 +18,7 @@
 - [x] Verify desktop/mobile layout has no horizontal overflow
 
 
-Current release: **V 0.4.0** (Python/FastAPI + SQLite). Check an item only after implementation and verification.
+Current release: **V 0.4.1** (Python/FastAPI + SQLite). Check an item only after implementation and verification.
 
 ## Reference background and typography — V 0.3.2
 - [x] Verify locally hosted Inter font loads and specified type scale (browser computed styles)

@@ -68,6 +68,10 @@ async function route() {
   const [, name = 'home', id] = location.hash.split('?')[0].split('/');
   const render = routes[name] || renderHome;
   state.screen = name in routes ? name : 'home';
+  document.body.dataset.screen = state.screen;
+  $('#chat').hidden = state.screen !== 'home';
+  $('#chat-toggle').hidden = state.screen !== 'home';
+  if (state.screen !== 'home') $('#chat').classList.remove('open');
   state.jobId = name === 'job' ? Number(id) : null;
   state.applicationId = name === 'application' ? Number(id) : null;
   const nav = { job: 'jobs', application: 'applications' }[state.screen] || state.screen;
@@ -487,7 +491,12 @@ async function sendMessage(text) {
   finally { state.chatBusy = false; btn.disabled = !state.geminiConnected; btn.textContent = 'Send'; loadSuggestions(); }
 }
 
-function askAssistant(text) { $('#chat').classList.add('open'); sendMessage(text); }
+function askAssistant(text) {
+  // Capture the current job/application context before navigating to Home.
+  sendMessage(text);
+  location.hash = '#/home';
+  $('#chat').classList.add('open');
+}
 
 async function initChat() {
   const s = await api('/api/settings');

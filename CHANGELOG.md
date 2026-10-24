@@ -1,5 +1,9 @@
 # Changelog
 
+## V 0.4.1
+- Display the Gemini panel and mobile Assistant toggle on Home only.
+- Let other pages use the freed horizontal space; contextual assistant actions open Home while retaining the original request context.
+
 ## V 0.4.0
 - Simplify Profile & resume to resume upload/replacement, optional photo and professional links only.
 - Preserve existing profile facts and matching preferences; saving links cannot erase career data.

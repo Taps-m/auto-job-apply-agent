@@ -1,6 +1,6 @@
 {
   "name": "Personal Job Assistant",
-  "version": "V 0.4.0",
+  "version": "V 0.4.1",
   "host": "127.0.0.1",
   "port": 8765,
   "extra_allowed_hosts": ["testserver"],
