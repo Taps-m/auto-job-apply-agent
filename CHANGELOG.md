@@ -1,5 +1,8 @@
 # Changelog
 
+## V 0.5.1
+- Add a bottom copyright bar displaying Copyright @Tapomoy 2026.
+
 ## V 0.5.0
 - Replace sidebar with horizontal top navigation; keep Gemini on Home only.
 - Add the Applications tab success chart: X = profile match percentage, Y = confirmed applications; refresh every 15 seconds while that tab is open.
