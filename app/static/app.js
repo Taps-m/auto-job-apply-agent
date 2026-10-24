@@ -428,7 +428,7 @@ async function renderSettings(section) {
   $('#automation').addEventListener('submit', async (e) => { e.preventDefault(); try { await api('/api/settings', { method: 'PUT', body: formData(e.target) }); toast('Saved'); } catch (err) { toast(err.message); } });
   $('#delete-all').addEventListener('submit', async (e) => {
     e.preventDefault(); if (!confirm('Permanently delete your profile, jobs, applications, documents and conversations?')) return;
-    try { await api('/api/privacy/delete-all', { method: 'POST', body: formData(e.target) }); state.sessionId = null; toast('All data deleted'); loadSessions(); location.hash = '#/home'; } catch (err) { toast(err.message); }
+    try { await api('/api/privacy/delete-all', { method: 'POST', body: formData(e.target) }); state.sessionId = null; toast('All data deleted'); location.hash = '#/home'; } catch (err) { toast(err.message); }
   });
 }
 
@@ -447,11 +447,6 @@ function appendMessage(role, content, tools) {
   if (tools?.length) div.insertAdjacentHTML('beforeend', `<div class="tools">Looked up: ${esc([...new Set(tools)].join(', ').replace(/_/g, ' '))}</div>`);
   $('#chat-log').append(div);
   $('#chat-log').scrollTop = $('#chat-log').scrollHeight;
-}
-
-async function loadSessions() {
-  const sessions = await api('/api/chat/sessions');
-  $('#chat-sessions').innerHTML = '<option value="">New conversation</option>' + sessions.map((s) => `<option value="${s.id}" ${s.id === state.sessionId ? 'selected' : ''}>${esc(s.title)}</option>`).join('');
 }
 
 async function openSession(id) {
@@ -483,9 +478,8 @@ async function sendMessage(text) {
   loadSuggestions();
   try {
     const r = await api('/api/chat', { method: 'POST', body: { message: text, session_id: state.sessionId, context: { screen: state.screen, job_id: state.jobId, application_id: state.applicationId } } });
-    const isNew = !state.sessionId; state.sessionId = r.session_id;
+    state.sessionId = r.session_id;
     appendMessage(r.role, r.reply, r.tools_used);
-    if (isNew) loadSessions();
     loadActions();
   } catch (e) { appendMessage('error', e.message); }
   finally { state.chatBusy = false; btn.disabled = !state.geminiConnected; btn.textContent = 'Send'; loadSuggestions(); }
@@ -508,9 +502,7 @@ async function initChat() {
   $('#chat-form textarea').placeholder = state.geminiConnected ? 'Ask about this role or your next move…' : 'Connect Gemini to start chatting…';
   await openSession(null);
   loadSuggestions();
-  await loadSessions(); loadActions();
-  $('#chat-sessions').addEventListener('change', (e) => openSession(e.target.value ? Number(e.target.value) : null));
-  $('#chat-new').addEventListener('click', () => { $('#chat-sessions').value = ''; openSession(null); });
+  loadActions();
   $('#chat-form').addEventListener('submit', (e) => { e.preventDefault(); const t = e.target.message; sendMessage(t.value); t.value = ''; });
   $('#chat-form textarea').addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); $('#chat-form').requestSubmit(); } });
   $('#chat-suggestions').addEventListener('click', (e) => { const b = e.target.closest('[data-suggest]'); if (b) sendMessage(b.dataset.suggest); });

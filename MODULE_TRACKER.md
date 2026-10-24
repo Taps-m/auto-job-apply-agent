@@ -1,5 +1,9 @@
 # Personal Job Assistant — Module Tracker
 
+## Gemini simplification — V 0.4.2
+- [x] Remove conversation dropdown and New button
+- [x] Browser check: chat composer remains visible with no page errors
+
 ## Home-only Gemini — V 0.4.1
 - [x] Browser verification: Gemini visible on Home and hidden on Profile, Jobs, Applications and Settings
 - [x] Other desktop pages use freed width; mobile Assistant toggle hidden outside Home
@@ -18,7 +22,7 @@
 - [x] Verify desktop/mobile layout has no horizontal overflow
 
 
-Current release: **V 0.4.1** (Python/FastAPI + SQLite). Check an item only after implementation and verification.
+Current release: **V 0.4.2** (Python/FastAPI + SQLite). Check an item only after implementation and verification.
 
 ## Reference background and typography — V 0.3.2
 - [x] Verify locally hosted Inter font loads and specified type scale (browser computed styles)

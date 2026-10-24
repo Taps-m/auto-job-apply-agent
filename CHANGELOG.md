@@ -1,5 +1,8 @@
 # Changelog
 
+## V 0.4.2
+- Remove the conversation selector and New button from Gemini; retain the active chat and backend conversation storage.
+
 ## V 0.4.1
 - Display the Gemini panel and mobile Assistant toggle on Home only.
 - Let other pages use the freed horizontal space; contextual assistant actions open Home while retaining the original request context.
