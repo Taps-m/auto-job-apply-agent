@@ -1,5 +1,8 @@
 # Changelog
 
+## V 0.4.4
+- Record the user's weekly application-report preference. Automated report generation and delivery remain pending.
+
 ## V 0.4.3
 - Record daily search with manual runs, match threshold ≥80%, and no daily application cap in application_policy.json.
 - Keep required screening answers, matching preferences, permitted routes and duplicate checks as submission conditions. Connector execution remains pending.

@@ -2,6 +2,7 @@
   "minimum_match_score": 80,
   "daily_application_limit": null,
   "search_frequency": "daily",
+  "report_frequency": "weekly",
   "allow_manual_run": true,
   "require_matching_preferences": true,
   "require_permitted_submission_route": true,
