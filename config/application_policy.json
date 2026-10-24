@@ -1,0 +1,11 @@
+{
+  "minimum_match_score": 80,
+  "daily_application_limit": null,
+  "search_frequency": "daily",
+  "allow_manual_run": true,
+  "require_matching_preferences": true,
+  "require_permitted_submission_route": true,
+  "require_known_required_answers": true,
+  "require_duplicate_check": true,
+  "execution_status": "pending_submission_connector"
+}

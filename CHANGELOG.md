@@ -1,5 +1,9 @@
 # Changelog
 
+## V 0.4.3
+- Record daily search with manual runs, match threshold ≥80%, and no daily application cap in application_policy.json.
+- Keep required screening answers, matching preferences, permitted routes and duplicate checks as submission conditions. Connector execution remains pending.
+
 ## V 0.4.2
 - Remove the conversation selector and New button from Gemini; retain the active chat and backend conversation storage.
 
