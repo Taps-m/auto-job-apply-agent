@@ -77,7 +77,7 @@ def test_click_timeout_is_uncertain_not_retryable(monkeypatch):
     monkeypatch.setattr(service, 'open_employer_page', Mock())
     finish=Mock(); monkeypatch.setattr(queue, 'finish', finish)
     confirm=Mock(); monkeypatch.setattr(service, 'confirm_submitted', confirm)
-    worker.run_one(page, {'application_id':1,'employer_url':page.url})
+    worker.run_one(page, {'application_id':1,'employer_url':page.url}, submit=True)
     assert finish.call_args.args[1] == 'uncertain'
     confirm.assert_not_called()
 
@@ -89,7 +89,7 @@ def test_agreement_blocks_auto_submit(monkeypatch):
     page.locator.return_value.count.return_value=0
     monkeypatch.setattr(worker, 'fill_dover', lambda *args: [])
     finish=Mock(); monkeypatch.setattr(queue, 'finish', finish)
-    worker.run_one(page, {'application_id':1,'employer_url':page.url})
+    worker.run_one(page, {'application_id':1,'employer_url':page.url}, submit=True)
     assert finish.call_args.args[1]=='needs_attention'
     page.get_by_role.return_value.last.click.assert_not_called()
 
@@ -104,7 +104,7 @@ def test_confirmation_is_required_and_recorded(monkeypatch):
     monkeypatch.setattr(service, 'open_employer_page', Mock())
     confirm=Mock(); monkeypatch.setattr(service, 'confirm_submitted', confirm)
     finish=Mock(); monkeypatch.setattr(queue, 'finish', finish)
-    worker.run_one(page, {'application_id':1,'employer_url':page.url})
+    worker.run_one(page, {'application_id':1,'employer_url':page.url}, submit=True)
     confirm.assert_called_once_with(1,'Application submitted')
     assert finish.call_args.args[1]=='submitted'
     page.screenshot.assert_called_once()
@@ -127,3 +127,16 @@ def test_applied_metric_excludes_drafts_and_keeps_withdrawn_submissions(monkeypa
     with tx() as c:
         c.execute("UPDATE applications SET status='withdrawn',submitted_at=? WHERE id=1", (now(),))
     assert service.metrics()['submitted']==1
+
+
+def test_default_worker_cannot_submit(monkeypatch):
+    seed(monkeypatch)
+    page=Mock(); page.url='https://app.dover.com/apply/test/1'
+    page.locator.return_value.inner_text.return_value='Job application'
+    page.locator.return_value.count.return_value=0
+    monkeypatch.setattr(worker,'fill_dover',lambda *args:[])
+    finish=Mock(); monkeypatch.setattr(queue,'finish',finish)
+    worker.run_one(page,{'application_id':1,'employer_url':page.url})
+    assert finish.call_args.args[1]=='needs_attention'
+    assert 'Preparation complete' in finish.call_args.args[2]
+    page.get_by_role.return_value.last.click.assert_not_called()

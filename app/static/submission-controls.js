@@ -15,7 +15,7 @@
       if (!panel.isConnected) return;
       panel.querySelector('[data-worker-state]').textContent = worker.running ? 'Worker running' : 'Worker stopped';
       panel.querySelector('[data-queue-list]').innerHTML = queue.items.length ? queue.items.map(item =>
-        `<li><a href="#/application/${item.application_id}">${escape(item.company)} — ${escape(item.title)}</a>: ${escape(item.state.replaceAll('_',' '))}${item.detail ? `<p>${escape(item.detail)}</p>` : ''}${item.state === 'queued' ? ` <button type="button" data-cancel="${item.application_id}">Remove</button>` : ''}</li>`).join('') : '<li>No queued applications.</li>';
+        `<li><a href="#/application/${item.application_id}">${escape(item.company)} - ${escape(item.title)}</a>: ${escape(item.state.replaceAll('_',' '))}${item.detail ? `<p>${escape(item.detail)}</p>` : ''}${item.state === 'queued' ? ` <button type="button" data-cancel="${item.application_id}">Remove</button>` : ''}</li>`).join('') : '<li>No queued applications.</li>';
     } catch (error) { panel.querySelector('[data-worker-state]').textContent = error.message; }
   }
   function mount() {
@@ -24,8 +24,8 @@
     const id = location.hash.match(/^#\/application\/(\d+)$/)?.[1];
     const panel = document.createElement('section');
     panel.id = 'submission-controls'; panel.className = 'card';
-    panel.innerHTML = `<h2>Application worker</h2><p data-worker-state role="status">Loading…</p>
-      <p>Dover forms only · Live submission validation pending. Uses a separate local browser login.</p>
+    panel.innerHTML = `<h2>Application worker</h2><p data-worker-state role="status">Loadingâ€¦</p>
+      <p>Prototype: prepares Dover forms only. Review and submit in the employer browser.</p>
       <div class="row"><button type="button" data-start>Start worker</button><button type="button" class="ghost" data-stop>Stop worker</button><button type="button" class="ghost" data-refresh>Refresh</button></div>
       ${id ? '<form data-queue-form><label>Employer application URL<input name="employer_url" type="url" required placeholder="https://app.dover.com/apply/company/job"></label><button type="submit">Queue this application</button></form>' : ''}
       <ul data-queue-list></ul>`;

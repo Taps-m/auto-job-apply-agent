@@ -1,31 +1,33 @@
-# Submission worker — V 0.6.3
+# Application prototype — V 0.6.4
 
-This is an initial implementation, not a verified seven-portal auto-apply release.
+## Verified
 
-- [x] Persistent submission queue with 80% match and preference checks.
-- [x] Duplicate protection and uncertain-result states.
-- [x] CV-first upload; optional fields and cover letters skipped.
-- [x] Home metric changed to confirmed jobs applied.
-- [ ] Verify Dover autofill completion and required-field mappings live.
-- [ ] Verify employer submission confirmation end to end.
-- [ ] Add and validate remaining employer/portal adapters.
-- [x] Integrate queue controls and worker lifecycle into the dashboard.
+- [x] Persistent queue, eligibility >=80%, duplicate protection and crash recovery.
+- [x] Start/Stop controls on Applications, using a local Edge profile.
+- [x] CV-first upload, required text and radio answers, optional fields skipped.
+- [x] Dover label discovery checked against the live IOMETE form.
+- [x] Actual worker started from dashboard and prepared IOMETE through terms review.
+- [x] Default preparation mode cannot click Apply.
+- [ ] Confirm a real employer submission.
+- [ ] Validate other portals and employer form adapters.
 
-The optional worker uses Microsoft Edge with a dedicated local profile under
-ignored `data/application-browser`. It does not import passwords or sessions
-from your usual browser. Login is required once in that profile.
+## Current operation
 
-The worker waits for native CV autofill and checks required text against saved answers. It does not
-claim that upload, a draft, or clicking Apply is a successful submission.
-Agreements, verification challenges, missing answers and unknown forms need
-attention. Interrupted attempts must be checked at the employer before retrying.
+The dashboard worker is preparation-only. It uploads the CV, fills required fields
+from verified application answers, and leaves the employer page open for review.
+It never clicks Apply in this mode. The final agreement and submission remain
+with the user. It can observe a confirmation on the same employer URL after
+manual submission and then update the application count.
 
-Developer entry point: `python -m app.modules.applications.worker` after
-installing `requirements-worker.txt`. An operating-system lock prevents simultaneous workers.
-This prototype is not enabled automatically by the application scheduler.
+Open http://127.0.0.1:8765/#/applications to view queue status. Start worker opens
+Edge with its own local profile. Existing Firefox and in-app-browser sessions
+are not copied. Stop is checked between operations and before submission.
+A blocked page stays open; close it to move to the next queued job.
 
-## Use
-
-Open Applications to start or stop the worker. Open an application detail to queue its verified Dover employer URL. Save answers using the exact field labels (for example `First Name`) in the existing application editor. The worker opens Edge; attention items stay visible until you resolve or close that tab. Stop takes effect between operations and before submit.
-
-Eight isolated queue/worker tests pass. Live autofill, employer submission and other portal adapters remain unverified; no real applications were sent during this build.
+On 25 October 2026, the running worker reached IOMETE's terms-review state after
+CV attachment and required-field completion. No confirmed submission has been
+recorded. Thirteen isolated tests cover matching, duplicates, crash recovery,
+required answers, single CV upload, optional-field skipping, confirmation handling,
+and the default no-submission behavior. These tests are not a claim that all
+portals work. Private answers, browser sessions and evidence remain under ignored
+data/ and tmp/ directories.

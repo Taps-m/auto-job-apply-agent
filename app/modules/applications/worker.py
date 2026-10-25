@@ -38,64 +38,62 @@ def exclusive_worker():
 
 
 def fill_dover(page, application):
-    """Only exact saved answers; no model-generated screening answers."""
+    """Upload once, then resolve required fields from verified local answers."""
+    from .forms import FIELD_INFO, answer_for
     doc = documents.get(application['resume_document_id'])
     path = documents.path_of(doc)
     if not path.is_file():
         return ['Resume file is missing']
     autofill = page.get_by_role('button', name='Upload file', exact=True)
-    if autofill.count() == 1:
-        with page.expect_file_chooser() as choice:
-            autofill.click()
-        choice.value.set_files(str(path))
-        # Wait for the employer's parser, bounded; never guess that it finished.
-        from playwright.sync_api import expect
-        expected_name = application['answers'].get('First Name')
-        if not expected_name:
-            return ['Add the verified First Name answer before continuing after autofill.']
-        try:
-            expect(page.get_by_role('textbox', name=re.compile(r'^First Name'))).to_have_value(expected_name, timeout=45000)
-        except Exception:
-            return ['Resume autofill did not finish with the verified name. Review the browser.']
     upload = page.get_by_role('button', name='Drag and drop file or browse computer (PDF, 5 MB maximum)', exact=True)
-    if upload.count() != 1:
+    control = autofill if autofill.count() == 1 else upload
+    if control.count() != 1:
         return ['Resume upload control needs review']
     with page.expect_file_chooser() as choice:
-        upload.click()
+        control.click()
     choice.value.set_files(str(path))
-    answers = application['answers']
-    fields = page.get_by_role('textbox')
+    # The attached filename is the upload signal, not autofill success.
+    try:
+        page.get_by_text(re.compile(re.escape(path.name[:20]))).first.wait_for(timeout=15000)
+    except Exception:
+        return ['Resume attachment could not be verified']
     missing = []
-    for i in range(fields.count()):
-        field = fields.nth(i)
+    fields = page.get_by_role('textbox')
+    for field in fields.all():
         if not field.is_visible():
             continue
-        label = field.evaluate("e => (Array.from(e.labels || []).map(x=>x.innerText).join(' ') || e.getAttribute('aria-label') || '').trim()")
-        required = (field.get_attribute('required') is not None or field.get_attribute('aria-required') == 'true' or '*' in label)
-        if not required:
+        info = field.evaluate(FIELD_INFO)
+        if not info['required']:
             continue
-        key = re.sub(r'\s*\*\s*$', '', label).strip()
-        answer = answers.get(label, answers.get(key))
-        if answer:
-            field.fill(str(answer))
+        answer = answer_for(info, application['answers'])
+        if answer is None:
+            missing.append(info['label'] or info['name'] or 'Unlabelled required field')
         else:
-            missing.append(key or 'Unlabelled required field')
-    for label, answer in answers.items():
-        group = page.get_by_role('group', name=label, exact=True)
-        if group.count() == 1 and (group.get_attribute('aria-required') == 'true' or '*' in label):
-            radio = group.get_by_role('radio', name=str(answer), exact=True)
-            if radio.count() == 1:
-                radio.check()
-    for group in page.get_by_role('group').all():
+            field.fill(answer)
+            if field.input_value() != answer:
+                missing.append(info['label'] + ': value was not retained')
+    for group in page.get_by_role('radiogroup').all():
         if not group.is_visible():
             continue
-        label = group.get_attribute('aria-label') or ''
-        if (group.get_attribute('aria-required') == 'true' or '*' in label) and label not in answers:
-            missing.append(label or 'Required selection needs a verified answer')
+        info = group.evaluate(FIELD_INFO)
+        if not info['required']:
+            continue
+        answer = answer_for(info, application['answers'])
+        if answer is None:
+            missing.append(info['label'] or 'Required radio selection')
+        else:
+            radio = group.get_by_role('radio', name=answer, exact=True)
+            if radio.count() == 1:
+                radio.check()
+            else:
+                missing.append(info['label'] + ': saved answer is not an option')
+    # Required controls outside the supported text/radio set need review.
+    if page.locator('select[required],input[type="checkbox"][required]').count():
+        missing.append('Required dropdown or checkbox needs review')
     return missing
 
 
-def run_one(page, item):
+def run_one(page, item, *, submit=False):
     app_id = item['application_id']
     a = service.get(app_id)
     queue.eligibility(a)  # Recheck current score, preferences, expiry and resume.
@@ -124,6 +122,9 @@ def run_one(page, item):
         return
     if re.search(r'by applying.{0,100}(agree|terms)|terms of service|terms and conditions', page.locator('body').inner_text(), re.I):
         queue.finish(app_id, 'needs_attention', 'The employer requires agreement to terms. Review them and submit in the open browser.')
+        return
+    if not submit:
+        queue.finish(app_id, 'needs_attention', 'Preparation complete. Review the employer form and submit in the browser. This worker cannot click Apply in preparation mode.')
         return
     service.open_employer_page(app_id)
     if (data_dir() / 'worker-stop').exists():
@@ -162,7 +163,7 @@ def main():
                 continue
             page = context.new_page()
             try:
-                run_one(page, item)
+                run_one(page, item, submit=False)
             except Exception:
                 queue.finish(item['application_id'], 'needs_attention', 'Form could not be completed. Review the open employer page; no automatic retry.')
             state = next(x['state'] for x in queue.listing() if x['application_id'] == item['application_id'])

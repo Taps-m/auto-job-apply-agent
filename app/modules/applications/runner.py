@@ -16,6 +16,7 @@ def status():
     return {'running': _process is not None and _process.poll() is None,
             'installed': importlib.util.find_spec('playwright') is not None,
             'supported': ['Dover employer forms'],
+            'mode': 'prepare_only',
             'live_verified': False}
 
 

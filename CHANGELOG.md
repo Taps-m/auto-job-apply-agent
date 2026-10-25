@@ -1,3 +1,9 @@
+# V 0.6.4
+
+- Fix Dover nonstandard required labels and radio questions using the observed employer form.
+- Upload CV once, retain attachment after autofill failure, and fill required fields from exact verified answers.
+- Thirteen isolated tests pass. Actual preparation worker reached IOMETE terms review; final submission remains manual and unverified.
+
 # V 0.6.3
 
 - Add persistent application queue, visible Dover worker, start/stop controls and duplicate/crash protection.

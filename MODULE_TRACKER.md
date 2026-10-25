@@ -119,3 +119,6 @@ Current release: **V 0.5.0** (Python/FastAPI + SQLite). Check an item only after
 
 - [x] V 0.6.3: Persistent application queue, worker controls, CV-first Dover connector and eight isolated tests.
 - [ ] V 0.6.3: Live submission validation and other portal connectors.
+
+- [x] V 0.6.4: Actual Dover preparation worker reached terms review; 13 tests pass.
+- [ ] V 0.6.4: Verify final employer submission and additional portals.
