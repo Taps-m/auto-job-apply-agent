@@ -1,5 +1,10 @@
 # Changelog
 
+## V 0.6.1
+- Add an optional PDF/DOCX cover-letter upload below Resume, stored separately from the master resume.
+- Remove routine search summaries and connection notices; add a top-bar Search button showing the last run time.
+
+
 ## V 0.6.0
 - Connect the official Himalayas public job API for India-compatible remote vacancies.
 - Add Search now, live progress and manual/daily/weekly scheduling while the server runs.

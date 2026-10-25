@@ -21,3 +21,5 @@ body:not([data-screen="home"]) .shell{grid-template-columns:minmax(0,1fr)}
 .copyright-bar{position:relative;z-index:1;padding:14px 20px;text-align:center;color:#a5b8d3;font:400 13px/1.5 Inter,sans-serif;background:rgba(7,23,47,.82);border-top:1px solid rgba(55,187,225,.18);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
 
 .discovery-panel{margin-bottom:20px}.discovery-panel h2{margin:0;font-size:20px}.discovery-panel p{font-size:13px;margin:8px 0}.discovery-panel select{width:auto;margin-left:8px}
+
+#discovery-nav-run{font-size:12px;white-space:nowrap;padding:8px 12px;margin-left:4px}

@@ -15,7 +15,11 @@ def folder() -> Path:
     return data_dir() / "documents"
 
 
-def save(filename: str, content: bytes, is_master: bool, user_id=USER_ID) -> dict:
+def save(filename: str, content: bytes, is_master: bool, user_id=USER_ID, *, kind: str = "resume") -> dict:
+    if kind not in ("resume", "cover_letter"):
+        raise ServiceError("Choose resume or cover_letter")
+    if kind == "cover_letter":
+        is_master = False
     types = config.app_config()["allowed_document_types"]
     ext = Path(filename).suffix.lower()
     if ext not in types:
@@ -31,7 +35,7 @@ def save(filename: str, content: bytes, is_master: bool, user_id=USER_ID) -> dic
         if is_master:
             c.execute("UPDATE documents SET is_master=0 WHERE user_id=? AND kind='resume'", (user_id,))
         cur = c.execute("INSERT INTO documents(user_id, kind, filename, stored_path, is_master, uploaded_at)"
-                        " VALUES (?,?,?,?,?,?)", (user_id, "resume", Path(filename).name[:200], stored.name,
+                        " VALUES (?,?,?,?,?,?)", (user_id, kind, Path(filename).name[:200], stored.name,
                                                   int(is_master), now()))
     return get(cur.lastrowid, user_id)
 
@@ -61,6 +65,8 @@ def master_resume_id(user_id=USER_ID):
 
 
 def set_master(doc_id: int, user_id=USER_ID) -> list:
+    if get(doc_id, user_id)["kind"] != "resume":
+        raise ServiceError("A cover letter cannot be the master resume")
     get(doc_id, user_id)
     with tx() as c:
         c.execute("UPDATE documents SET is_master=0 WHERE user_id=? AND kind='resume'", (user_id,))

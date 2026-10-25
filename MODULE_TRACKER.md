@@ -1,5 +1,10 @@
 # Personal Job Assistant — Module Tracker
 
+## Cover letter and dashboard clarity — V 0.6.1
+- [x] Store optional cover letters separately; preserve the master resume
+- [x] Validate file type and prevent setting a cover letter as master resume
+- [x] Remove routine search status details; add last-run button in the top navigation
+
 ## Job discovery — V 0.6.0
 - [x] Connect official Himalayas public API and verify live India-compatible results
 - [x] Add manual search and daily/weekly scheduling while the app runs

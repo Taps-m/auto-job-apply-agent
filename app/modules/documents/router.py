@@ -12,9 +12,9 @@ def documents():
 
 
 @router.post("")
-async def upload(file: UploadFile = File(...), is_master: bool = Form(True)):
+async def upload(file: UploadFile = File(...), is_master: bool = Form(True), kind: str = Form("resume")):
     content = await file.read(service.max_upload_bytes() + 1)
-    return service.save(file.filename or "resume", content, is_master)
+    return service.save(file.filename or kind, content, is_master, kind=kind)
 
 
 @router.post("/{doc_id}/master")

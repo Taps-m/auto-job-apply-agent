@@ -340,7 +340,7 @@ async function renderApplication(id) {
 async function renderProfile(section) {
   if (section === 'preferences') { location.hash = '#/settings/preferences'; return; }
   const [docs, assets] = await Promise.all([api('/api/documents'), api('/api/profile/assets')]);
-  const resume = docs.find(d => d.source === 'upload' && d.is_master) || docs.find(d => d.source === 'upload');
+  const resume = docs.find(d => d.source === 'upload' && d.kind === 'resume' && d.is_master) || docs.find(d => d.source === 'upload' && d.kind === 'resume');
   view().innerHTML = `
     <h1>Profile &amp; resume</h1><p class="muted">Your resume, photo and professional links.</p>
     <section class="card stack"><h2 class="profile-section-title">Resume</h2>
