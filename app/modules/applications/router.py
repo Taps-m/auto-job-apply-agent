@@ -2,8 +2,40 @@ from fastapi import APIRouter, Body
 
 from . import service
 from . import analytics
+from . import queue
+from . import runner
 
 router = APIRouter(prefix="/api/applications", tags=["applications"])
+
+
+@router.get('/worker')
+def worker_status():
+    return runner.status()
+
+
+@router.post('/worker/start')
+def worker_start():
+    return runner.start()
+
+
+@router.post('/worker/stop')
+def worker_stop():
+    return runner.stop()
+
+
+@router.post('/{app_id}/queue/cancel')
+def cancel_queue(app_id: int):
+    return {'items': queue.cancel(app_id)}
+
+
+@router.get('/queue')
+def submission_queue():
+    return {'items': queue.listing()}
+
+
+@router.post('/{app_id}/queue')
+def enqueue(app_id: int, data: dict = Body(...)):
+    return {'items': queue.enqueue(app_id, data.get('employer_url', ''))}
 
 
 @router.get('/progress')

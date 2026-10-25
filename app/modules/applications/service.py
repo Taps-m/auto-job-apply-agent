@@ -184,7 +184,8 @@ def metrics(user_id=USER_ID) -> dict:
     with tx() as c:
         counts = {r["status"]: r["n"] for r in c.execute(
             "SELECT status, COUNT(*) n FROM applications WHERE user_id=? GROUP BY status", (user_id,))}
-    submitted = sum(counts.get(s, 0) for s in SUBMITTED_OR_LATER)
+        submitted = c.execute('SELECT COUNT(*) FROM applications WHERE user_id=? AND submitted_at IS NOT NULL',
+                              (user_id,)).fetchone()[0]
     responded = sum(counts.get(s, 0) for s in RESPONDED)
     return {"by_status": counts, "submitted": submitted,
             "interviews": counts.get("interview", 0) + counts.get("offer", 0),

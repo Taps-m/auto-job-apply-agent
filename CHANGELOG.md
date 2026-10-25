@@ -1,3 +1,10 @@
+# V 0.6.3
+
+- Add persistent application queue, visible Dover worker, start/stop controls and duplicate/crash protection.
+- Upload CV first; skip optional fields; require verified required answers and employer confirmation.
+- Replace Home Saved counter with confirmed Jobs applied.
+- Live submission and other portal integrations remain pending validation.
+
 # V 0.6.2
 
 - Remove career summary and targeting text from Home; retain counters.

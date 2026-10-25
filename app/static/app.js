@@ -61,7 +61,7 @@ function careerOverview(o) {
     <div class="metrics">
       <div class="metric"><b>${o.tracked_jobs}</b>Jobs tracked</div>
       <div class="metric"><b>${o.eligible_jobs}</b>Eligible matches</div>
-      <div class="metric"><b>${o.saved_jobs}</b>Saved</div>
+      <div class="metric"><b>${o.applied_jobs ?? 0}</b>Jobs applied</div>
     </div></div>`;
 }
 

@@ -116,3 +116,6 @@ Current release: **V 0.5.0** (Python/FastAPI + SQLite). Check an item only after
 - [ ] Gmail OAuth with minimal scopes for recruiter-response tracking
 
 - [x] V 0.6.2: Remove Home career summary and targeting text.
+
+- [x] V 0.6.3: Persistent application queue, worker controls, CV-first Dover connector and eight isolated tests.
+- [ ] V 0.6.3: Live submission validation and other portal connectors.
