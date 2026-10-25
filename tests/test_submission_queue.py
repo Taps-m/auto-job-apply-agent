@@ -119,3 +119,11 @@ def test_unknown_required_answers_do_not_submit(monkeypatch):
     worker.run_one(page,{'application_id':1,'employer_url':page.url})
     assert finish.call_args.args[1]=='needs_attention'
     page.get_by_role.return_value.last.click.assert_not_called()
+
+
+def test_applied_metric_excludes_drafts_and_keeps_withdrawn_submissions(monkeypatch):
+    seed(monkeypatch)
+    assert service.metrics()['submitted']==0
+    with tx() as c:
+        c.execute("UPDATE applications SET status='withdrawn',submitted_at=? WHERE id=1", (now(),))
+    assert service.metrics()['submitted']==1
