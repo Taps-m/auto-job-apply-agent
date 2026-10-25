@@ -57,19 +57,7 @@ function jobCard(j) {
 }
 
 function careerOverview(o) {
-  const facts = [
-    o.headline && esc(o.headline),
-    o.years_experience !== null && o.years_experience !== undefined && `${o.years_experience} years' experience`,
-    o.current_role && `currently ${esc(o.current_role)}`,
-  ].filter(Boolean);
-  const targets = [
-    o.target_roles.length && `Targeting ${esc(o.target_roles.join(', '))}`,
-    o.top_cities.length && `in ${esc(o.top_cities.join(', '))}`,
-    `from ₹${o.min_salary_lpa} LPA`,
-  ].filter(Boolean);
   return `<div class="card overview">
-    ${facts.length ? `<p><b>${facts.join(' · ')}</b></p>` : '<p class="muted">Your career overview will appear when details from your resume are available.</p>'}
-    <p class="muted">${targets.join(' ')}</p>
     <div class="metrics">
       <div class="metric"><b>${o.tracked_jobs}</b>Jobs tracked</div>
       <div class="metric"><b>${o.eligible_jobs}</b>Eligible matches</div>

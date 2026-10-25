@@ -1,3 +1,7 @@
+# V 0.6.2
+
+- Remove career summary and targeting text from Home; retain counters.
+
 # Changelog
 
 ## V 0.6.1

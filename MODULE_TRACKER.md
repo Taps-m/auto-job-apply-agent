@@ -114,3 +114,5 @@ Current release: **V 0.5.0** (Python/FastAPI + SQLite). Check an item only after
 - [~] FR-803 source list (display only) · FR-804 search frequency (saved, not scheduled yet)
 - [ ] FR-805 notifications · FR-809 accounts (single local user for now)
 - [ ] Gmail OAuth with minimal scopes for recruiter-response tracking
+
+- [x] V 0.6.2: Remove Home career summary and targeting text.
