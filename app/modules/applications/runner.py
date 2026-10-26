@@ -7,13 +7,14 @@ import threading
 from ... import config
 from ...core.db import data_dir
 from ...core.errors import ServiceError
+from . import heartbeat
 
 _lock = threading.Lock()
 _process = None
 
 
 def status():
-    return {'running': _process is not None and _process.poll() is None,
+    return {'running': heartbeat.running() or (_process is not None and _process.poll() is None),
             'installed': importlib.util.find_spec('playwright') is not None,
             'supported': ['Dover employer forms'],
             'mode': 'prepare_only',

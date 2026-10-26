@@ -1,3 +1,8 @@
+# V 0.6.5
+
+- Add start/stop background launchers, persistent worker heartbeat, and nonblocking attention handling.
+- Preparation-only scope; final submission and other portal connectors remain pending.
+
 # V 0.6.4
 
 - Fix Dover nonstandard required labels and radio questions using the observed employer form.

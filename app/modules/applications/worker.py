@@ -156,22 +156,16 @@ def main():
     with exclusive_worker(), sync_playwright() as p:
         context = p.chromium.launch_persistent_context(str(data_dir() / 'application-browser'), channel='msedge', headless=False)
         queue.recover()
-        while not (data_dir() / 'worker-stop').exists():
-            item = queue.claim()
-            if not item:
-                time.sleep(1)
-                continue
-            page = context.new_page()
-            try:
-                run_one(page, item, submit=False)
-            except Exception:
-                queue.finish(item['application_id'], 'needs_attention', 'Form could not be completed. Review the open employer page; no automatic retry.')
-            state = next(x['state'] for x in queue.listing() if x['application_id'] == item['application_id'])
-            if state == 'submitted':
-                page.close()
-            else:
-                # Keep one unresolved page visible, without opening hundreds of tabs.
-                while not page.is_closed() and not (data_dir() / 'worker-stop').exists():
+        from . import heartbeat
+        pending = []
+        try:
+            while not (data_dir() / 'worker-stop').exists():
+                heartbeat.write()
+                # Review pages never block unrelated queued applications.
+                for page, item, state in list(pending):
+                    if page.is_closed():
+                        pending.remove((page, item, state))
+                        continue
                     try:
                         message = page.get_by_text(CONFIRMATION).first
                         if (state == 'needs_attention' and queue.supported_url(page.url)
@@ -187,10 +181,30 @@ def main():
                                 service.confirm_submitted(item['application_id'], message.inner_text())
                             queue.finish(item['application_id'], 'submitted', 'Employer confirmation observed after browser review.')
                             page.close()
-                            break
+                            pending.remove((page, item, state))
                     except Exception:
-                        pass  # A navigation may temporarily make the page unavailable.
-                    time.sleep(1)
+                        pass
+                item = queue.claim()
+                if not item:
+                    time.sleep(2)
+                    continue
+                # Bound memory on an 8GB laptop. Saved attention states remain in SQLite.
+                if len(pending) >= 3:
+                    old_page, _, _ = pending.pop(0)
+                    if not old_page.is_closed():
+                        old_page.close()
+                page = context.new_page()
+                try:
+                    run_one(page, item, submit=False)
+                except Exception:
+                    queue.finish(item['application_id'], 'needs_attention', 'Form could not be completed. Review the employer page; no automatic retry.')
+                state = next(x['state'] for x in queue.listing() if x['application_id'] == item['application_id'])
+                if state == 'submitted':
+                    page.close()
+                else:
+                    pending.append((page, item, state))
+        finally:
+            heartbeat.write('stopped')
         context.close()
 
 

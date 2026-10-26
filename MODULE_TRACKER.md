@@ -122,3 +122,6 @@ Current release: **V 0.5.0** (Python/FastAPI + SQLite). Check an item only after
 
 - [x] V 0.6.4: Actual Dover preparation worker reached terms review; 13 tests pass.
 - [ ] V 0.6.4: Verify final employer submission and additional portals.
+
+- [x] V 0.6.5: Local background launchers, persistent worker heartbeat and nonblocking queue processing; 16 isolated tests pass.
+- [ ] V 0.6.5: Unattended submission and multi-portal adapters.
